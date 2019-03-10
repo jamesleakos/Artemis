@@ -1,0 +1,174 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1406129015136914
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4138965495205372}
+  - component: {fileID: 114012700617637134}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: AudioManager
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4138965495205372
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1406129015136914}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 14.490389, y: 32.671093, z: 66.12156}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114012700617637134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1406129015136914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36bc64ef4c5c9469f827954cd972d527, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultMainVolume: 1
+  mainVolume: 1
+  sounds:
+  - name: Music
+    clip: {fileID: 8300000, guid: 39b2fb48ee700479ea2a13fe055e2051, type: 3}
+    defaultVolume: 0.56
+    volume: 0.56
+    pitch: 0.73
+    randomVolume: 0
+    randomPitch: 0
+    loop: 1
+    soundType: 1
+  - name: Jump
+    clip: {fileID: 8300000, guid: 254705f02aa4540ee98a4b65f17cf693, type: 3}
+    defaultVolume: 0.7
+    volume: 0.7
+    pitch: 1.5
+    randomVolume: 0.5
+    randomPitch: 0.5
+    loop: 0
+    soundType: 0
+  - name: DashAttack
+    clip: {fileID: 8300000, guid: 2a92327a2af6b4e928edee939e5d8c41, type: 3}
+    defaultVolume: 1
+    volume: 1
+    pitch: 1.5
+    randomVolume: 0
+    randomPitch: 0.201
+    loop: 0
+    soundType: 0
+  - name: ArrowRelease
+    clip: {fileID: 8300000, guid: 2a92327a2af6b4e928edee939e5d8c41, type: 3}
+    defaultVolume: 1
+    volume: 1
+    pitch: 0.95
+    randomVolume: 0
+    randomPitch: 0.213
+    loop: 0
+    soundType: 0
+  - name: Shockwave
+    clip: {fileID: 8300000, guid: 24e294e88d2a84ced893437b85069abd, type: 3}
+    defaultVolume: 0.25
+    volume: 0.25
+    pitch: 0.5
+    randomVolume: 0
+    randomPitch: 0.213
+    loop: 0
+    soundType: 0
+  - name: SpiderFire
+    clip: {fileID: 8300000, guid: 24e294e88d2a84ced893437b85069abd, type: 3}
+    defaultVolume: 0.25
+    volume: 0.25
+    pitch: 1.5
+    randomVolume: 0
+    randomPitch: 0.213
+    loop: 0
+    soundType: 0
+  - name: PowerDown
+    clip: {fileID: 8300000, guid: 42336536c969e473b83befaf2384180f, type: 3}
+    defaultVolume: 1
+    volume: 1
+    pitch: 1.08
+    randomVolume: 0
+    randomPitch: 0
+    loop: 0
+    soundType: 0
+  - name: ArmourHit
+    clip: {fileID: 8300000, guid: 7fc8fc4b1601043f0ad5b89479c51229, type: 3}
+    defaultVolume: 1
+    volume: 1
+    pitch: 1
+    randomVolume: 0
+    randomPitch: 0
+    loop: 0
+    soundType: 0
+  - name: MenuClick
+    clip: {fileID: 8300000, guid: d608cdaa5d6914de1936f0d1e1f11179, type: 3}
+    defaultVolume: 1
+    volume: 1
+    pitch: 1
+    randomVolume: 0
+    randomPitch: 0
+    loop: 0
+    soundType: 0
+  - name: ArtemisDeath
+    clip: {fileID: 8300000, guid: 4dc017cfc66fd46ad8000132f9582003, type: 3}
+    defaultVolume: 1
+    volume: 1
+    pitch: 1
+    randomVolume: 0
+    randomPitch: 0
+    loop: 0
+    soundType: 0
+  - name: ArtemisRespawn
+    clip: {fileID: 8300000, guid: 4dc017cfc66fd46ad8000132f9582003, type: 3}
+    defaultVolume: 1
+    volume: 1
+    pitch: 1.33
+    randomVolume: 0
+    randomPitch: 0
+    loop: 0
+    soundType: 0
+  - name: ArrowButton
+    clip: {fileID: 8300000, guid: 2a92327a2af6b4e928edee939e5d8c41, type: 3}
+    defaultVolume: 0.468
+    volume: 0.468
+    pitch: 1.33
+    randomVolume: 0
+    randomPitch: 0
+    loop: 0
+    soundType: 0
+  - name: Slice
+    clip: {fileID: 8300000, guid: c49585fa511c36c44aee25db0e11155d, type: 3}
+    defaultVolume: 0.5
+    volume: 0.5
+    pitch: 1.5
+    randomVolume: 0
+    randomPitch: 0
+    loop: 0
+    soundType: 0
+  - name: ravencall
+    clip: {fileID: 8300000, guid: 4ec14436a23adb74cb135ad23d2a0288, type: 3}
+    defaultVolume: 1
+    volume: 1
+    pitch: 0.95
+    randomVolume: 0
+    randomPitch: 0.1
+    loop: 0
+    soundType: 0

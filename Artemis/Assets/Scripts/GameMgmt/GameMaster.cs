@@ -1,0 +1,154 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
+public class GameMaster : MonoBehaviour {
+
+	public static GameMaster gm;
+
+    // Variables that the user does not need to change
+    private MenuSystem menuSystem;
+    public GameObject mask;
+
+    #region Key Codes
+    public KeyCode left { get; set; }
+    public KeyCode right { get; set; }
+    public KeyCode interact { get; set; }
+    public KeyCode useItem { get; set; }
+    public KeyCode jump { get; set; }
+    public KeyCode pause { get; set; }
+    public KeyCode fireDash { get; set; }
+    #endregion
+
+    #region Spawns
+    public Transform playerPrefab;
+    public Vector3 spawnPoint;
+    public float spawnDelay = 2;
+    public bool spawnReached;
+
+    public enum RespawnState { respawn, reset };
+    public RespawnState respawnState;
+    #endregion
+
+    #region Misc GM Tracking
+    public bool loadSplashScreen = true;
+    #endregion
+
+    // public CameraShake cameraShake;
+
+    void Start () {
+        Application.targetFrameRate = 60;
+
+        if (gm != null) {
+            if (gm != this) {
+                Destroy(this.gameObject);
+            }
+        } else {
+            gm = this;
+            DontDestroyOnLoad(this);
+        }
+
+        left = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("leftKey", "A"));
+        right = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("rightKey", "D"));
+        interact = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("interactKey", "W"));
+        useItem = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("useItemKey", "S"));
+        jump = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("jumpKey", "Mouse1"));
+        pause = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("pauseKey", "Space"));
+        fireDash = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("fireDashKey", "Mouse0"));
+    }
+
+    void OnEnable() {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable() {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+
+        menuSystem = GameObject.FindGameObjectWithTag("MenuSystem").GetComponent<MenuSystem>();
+        spawnReached = false;
+    }
+
+    #region Respawn Player
+
+    public void StartRespawnPlayer () {
+        menuSystem.fadeInEffect();
+        respawnState = RespawnState.respawn;
+    }
+    public void RespawnPlayer() {
+        Transform playerClone = Instantiate(playerPrefab, spawnPoint, new Quaternion(0f, 0f, 0f, 0f));
+        if (SceneManager.GetActiveScene().buildIndex == 0) {
+            playerClone.gameObject.GetComponent<Player>().muteSound = true;
+        }
+    }
+
+    public void UpdateSpawn(Vector3 newSpawn) {
+        spawnReached = true;
+        spawnPoint = newSpawn;
+    }
+
+    public void ResetSpawn() {
+        spawnReached = false;
+    }
+
+    #endregion
+
+    public void KillPlayer (Player player) {
+		Destroy (player.gameObject);
+		if (spawnReached) {
+            StartRespawnPlayer();
+		} else {
+			gm.loadLevelGame(SceneManager.GetActiveScene().buildIndex);
+		}
+	}
+
+    public void NextLevel() {
+		if (SceneManager.sceneCountInBuildSettings == SceneManager.GetActiveScene ().buildIndex + 1) {
+			gm.loadLevelGame (0);
+		} else {
+			gm.loadLevelGame(SceneManager.GetActiveScene().buildIndex + 1);
+		}
+    }
+
+    public static void KillEnemy(GameObject enemy) {
+        gm._KillEnemy(enemy);
+    }
+    public void _KillEnemy(GameObject _enemy) {
+
+        // GameObject _clone = Instantiate(_deer.deathParticles, _deer.transform.position, Quaternion.identity) as GameObject;
+        // Destroy(_clone, 5f);
+        // cameraShake.Shake(_deer.shakeAmt, _deer.shakeLength);
+        Destroy(_enemy);
+    }
+
+    public void DestroyCharacter(GameObject character) {
+        if (character.tag == "Deer") {
+            Deer deer = character.GetComponent<Deer>();
+            //KillDeer(deer);
+        } else if (character.tag == "Player") {
+            Debug.Log("Destroy Player - Player Identified");
+            Player player = character.GetComponent<Player>();
+            KillPlayer(player);
+        } else if (character.tag == "Arrow") {
+            Destroy(character);
+        } else if (character.tag == "ChargerEnemy" || character.tag == "RangedEnemy") {
+            Destroy(character);
+        }        
+    }
+
+    // Loads game level
+	public void loadLevelGame(int levelInt) {
+		menuSystem.setLevelToLoad(levelInt);
+        menuSystem.fadeInEffect();
+        respawnState = RespawnState.reset;
+    }
+
+    public void QuitGame() {
+        print("this will quit");
+        Application.Quit();
+    }
+}

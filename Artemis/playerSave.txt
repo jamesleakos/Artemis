@@ -1,0 +1,450 @@
+using UnityEngine;
+using System.Collections;
+
+[RequireComponent(typeof(Controller2D))]
+public class Player : MonoBehaviour {
+
+    // Mostly Public Vars
+    #region Basic Movement: Speed, Acceleration, JumpHeight
+
+    // character base speed
+    public float moveSpeed = 25;
+    public float moveSpeedBow = 5;
+
+    // accerlation times - only one I want significant is the wall jumping one
+    float accelerationTimeAirborne = 0.06f;
+    float accelerationTimeGrounded = 0.03f;
+
+    // jumping behaviors
+    public float jumpHeight = 7;
+    public float timeToJumpApex = .3f;
+    #endregion
+
+    #region Wall-Jumping and Sliding
+    // wall jumping
+    public float climbX = 35;
+    public float jumpAwayX = 25;
+
+    // making wall jumping a little smoother
+    float endWallJumpSmoothTime;
+    float wallJumpSmoothTimeLength = 0.7f;
+    float accelerationTimeWallJumping = 0.2f;
+
+    // wallsliding
+    public float wallSlideSpeedMax = 3;
+    #endregion
+
+    #region Attacking
+
+    // attacking
+    public float attackVelocity = 40;
+    float endAttackTime;
+    public float attackLength = 0.1f;
+    #endregion
+
+    #region Air Pause and Shooting
+
+    // shooting
+    public float loadTime = 0.1f;
+    public float fireCoolDownTime = 0.3f;
+    bool firingArrow;
+
+    // Air Pause
+    public float airPauseLength = 2;
+    float airPauseSpeedMaxUp = 4;
+    float airPauseSpeedMaxDown = 1.7f;
+    float airPauseGravityReductionUp = 0.06f;
+    float airPauseGravityReductionDown = 0.03f;
+    float airPauseAcceleration = 0.2f;
+    #endregion
+
+    // Private Vars
+
+    #region Private Movement Vars
+    [HideInInspector]
+    public Vector2 input;
+
+    // gravity and jumping - dependant on jump height and time to apex
+    [HideInInspector]
+    public float gravity;
+    float jumpVelocity;
+    [HideInInspector]
+    public Vector3 velocity;
+
+    // smoothing vars
+    float targetVelocityX;
+    float velocityXSmoothing;
+    Vector2 airPauseVelocitySmoothing;
+    #endregion
+
+    #region Tolerance Vars: Jump (normal, wall, wall away) - all private
+
+    // jump tolerance
+    float endJumpTolerance;
+    float jumpToleranceLength = 0.1f;
+
+    // wall jump tolerance
+    float endWallJumpTolerance;
+    float wallJumpToleranceLength = 0.2f;
+
+    // jump away tolerance
+    float endJumpAwayTolerance;
+    float jumpAwayTolerenceLength = 0.2f;
+    #endregion
+
+    #region Tracking Vars: Jumps, Attacks
+
+    // tracking attacks
+    [HideInInspector]
+    public int maxAttacks = 1;
+    [HideInInspector]
+    public int attacksRemaining;
+
+    // tracking jumps
+    [HideInInspector]
+    public int maxJumps = 2;
+    [HideInInspector]
+    public int jumpsRemaining;
+    #endregion
+
+    #region Misc - to clean at some point
+    // shooting
+    bool bowOut;
+    float endLoadTime;
+    public Arrow arrow;
+    Arrow arrowClone;
+    Transform bow;
+
+    // air pause and bow work
+    [HideInInspector]
+    public int maxAirPause = 1;
+    [HideInInspector]
+    public int airPauseRemaining;
+    float endAirPauseTime;
+
+    // tracking directions of last wall and face
+    int lastWallDirX;
+    int faceDirX;
+
+    // random bools
+    bool useJumpAway;
+    bool descending;
+    bool arrowProof;
+    #endregion
+
+    #region Animation
+    Animator animator;
+    float stateStartTime;
+    float timeInState {
+        get { return Time.time - stateStartTime; }
+    }
+    const string Idle = "Idle";
+    const string Run = "Run";
+    const string WallslideIdle = "WallslideIdle";
+    const string JumpIdle = "JumpIdle";
+
+    enum AnimationState {
+        Idle,
+        Jump,
+        Run,
+        WallslideIdle,
+        JumpIdle
+    }
+    AnimationState animationState;
+
+    #endregion
+
+    [HideInInspector]
+    public Controller2D controller;
+
+    // for enforcing singleton
+    private static Player _instance;
+    public static Player Instance { get { return _instance; } }
+
+    private void Awake() {
+        if (_instance != null && _instance != this) {
+            Destroy(this.gameObject);
+        } else {
+            _instance = this;
+        }
+    }
+
+    void Start() {
+        controller = GetComponent<Controller2D>();
+        animator = GetComponent<Animator>();
+
+        gravity = -(2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
+        jumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
+        print("Gravity: " + gravity + "  Jump Velocity: " + jumpVelocity);
+
+        jumpsRemaining = maxJumps;
+        attacksRemaining = maxAttacks;
+
+        bowOut = false;
+        arrowProof = false;
+        endLoadTime = Time.time;
+
+        bow = gameObject.transform.Find("Bow");
+        bow.localScale = new Vector3(1 / gameObject.transform.lossyScale.x, 1 / gameObject.transform.lossyScale.y, 1 / gameObject.transform.lossyScale.z);
+
+        faceDirX = 1;
+    }
+
+    void Update() {
+        // moving and general controls 
+        velocity = CalculateVelocity();
+        controller.Move(velocity * Time.deltaTime);
+
+        if (Input.GetKeyDown(KeyCode.P)) {
+            arrowProof = !arrowProof;
+        }
+
+        bowOut = false;
+        if (Input.GetKeyDown(KeyCode.Space) && airPauseRemaining > 0) {
+            // Load an arrow upon keyDown
+            arrowClone = LoadArrow();
+        }
+        if (Input.GetKey(KeyCode.Space)) {
+            if (controller.collisions.below) {
+                bowOut = true;
+            }
+            if (!controller.collisions.below && Time.time < endAirPauseTime) {
+                bowOut = true;
+            }
+        }
+        if (bowOut) {
+            UpdateArrowRotation();
+            if (Time.time > endLoadTime && Input.GetKeyDown(KeyCode.Mouse0)) {
+                StartCoroutine(FireArrow());
+            }
+            faceDirX = ((gameObject.transform.position.x - Camera.main.ScreenToWorldPoint(Input.mousePosition).x) <= 0) ? 1 : -1;
+        } else {
+            foreach (Transform child in bow) {
+                GameObject.Destroy(child.gameObject);
+            }
+        }
+
+        // Update animation state
+        Vector3 v = gameObject.transform.localScale;
+        gameObject.transform.localScale = new Vector3 (Mathf.Abs(v.x) * faceDirX * -1, v.y, v.z);
+        DetermineAnim();
+    }
+
+    #region Animation Test
+    void SetOrKeepState(AnimationState a_state) {
+        if (this.animationState == a_state) return;
+        EnterState(a_state);
+    }
+
+    void ExitState() {
+    }
+
+    void EnterState(AnimationState state) {
+        ExitState();
+        switch (state) {
+            case AnimationState.Idle:
+                animator.Play(Idle);
+                break;
+            case AnimationState.Run:
+                animator.Play(Run);
+                break;
+            case AnimationState.JumpIdle:
+                animator.Play(JumpIdle);
+                break;
+            case AnimationState.WallslideIdle:
+                animator.Play(WallslideIdle);
+                break;
+        }
+
+        this.animationState = state;
+        stateStartTime = Time.time;
+    }
+
+    void DetermineAnim() {
+        if (controller.collisions.below && Mathf.Abs(velocity.x) > 0.5f) SetOrKeepState(AnimationState.Run);
+        else if (controller.collisions.below) SetOrKeepState(AnimationState.Idle);
+        else if (controller.collisions.left || controller.collisions.right) SetOrKeepState(AnimationState.WallslideIdle);
+        else SetOrKeepState(AnimationState.JumpIdle);
+    }
+    #endregion
+
+    Vector3 CalculateVelocity() {
+
+        // get input and directions - do not write code before this
+        input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        int wallDirX = (controller.collisions.left) ? -1 : 1;
+        // face direction 
+        if ((int)input.x != 0) {
+            faceDirX = (int)input.x;
+        }
+
+        // air pause code-- can put before most other things to subvert unwanted calculation
+        if (!controller.collisions.below) {
+            if (Input.GetKeyDown(KeyCode.Space) && airPauseRemaining > 0) {
+                endAirPauseTime = Time.time + airPauseLength;
+                airPauseRemaining--;
+                descending = ((velocity.y < 0) ? true : false);
+
+                // Load an arrow upon keyDown
+                arrowClone = LoadArrow();
+            }
+
+            if (Input.GetKey(KeyCode.Space) && Time.time < endAirPauseTime) {
+
+                // first method - simple
+                if (descending) {
+                    velocity.y += gravity * airPauseGravityReductionDown * Time.deltaTime;
+                    Vector2 targetAirVelocity = new Vector2(velocity.x, velocity.y).normalized * airPauseSpeedMaxDown;
+                    velocity = Vector2.SmoothDamp(velocity, targetAirVelocity, ref airPauseVelocitySmoothing, airPauseAcceleration, Mathf.Infinity, Time.deltaTime);
+                } else {
+                    velocity.y += gravity * airPauseGravityReductionUp * Time.deltaTime;
+                    Vector2 targetAirVelocity = new Vector2(velocity.x, velocity.y).normalized * airPauseSpeedMaxUp;
+                    velocity = Vector2.SmoothDamp(velocity, targetAirVelocity, ref airPauseVelocitySmoothing, airPauseAcceleration, Mathf.Infinity, Time.deltaTime);
+                }
+
+                return velocity;
+            }
+        }
+
+        // setting base speed - with bow is slower - note this doesn't trigger in air, that was taken care of above
+        targetVelocityX = input.x * moveSpeed;
+        if (bowOut) {
+            targetVelocityX = input.x * moveSpeedBow;
+        }
+       
+        // smoothing of X acceleration - main value is on the wall jumping
+        if (Time.time < endWallJumpSmoothTime) {
+            velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, accelerationTimeWallJumping);
+        } else {
+            velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
+        }
+
+        // implement wall sliding via velocity.y and track if wallsliding and whether just left the wall
+        bool wallSliding = false;
+        if ((controller.collisions.left || controller.collisions.right) && !controller.collisions.below) {
+            wallSliding = true;
+            endWallJumpTolerance = Time.time + wallJumpToleranceLength;
+            lastWallDirX = wallDirX;
+
+            if (velocity.y < -wallSlideSpeedMax) {
+                velocity.y = -wallSlideSpeedMax;
+            }
+        }
+
+        if (controller.collisions.above || controller.collisions.below) {
+            velocity.y = 0;
+        }
+
+        // jumping and attacking controls
+
+        // reset jumping and attacking if on the ground
+        if (wallSliding || controller.collisions.below) {
+            jumpsRemaining = maxJumps;
+            attacksRemaining = maxAttacks;
+            airPauseRemaining = maxAirPause;
+        }
+        // if jump is pressed, perform the jump and remove a jumpsRemaining
+        if (Input.GetKeyDown(KeyCode.Mouse1) || (Time.time < endJumpTolerance)) {
+            if (jumpsRemaining > 0) {
+                if (wallSliding) {
+                    velocity.x = -wallDirX * climbX;
+                    velocity.y = jumpVelocity;
+
+                    // track time since jumped for smoothing
+                    endWallJumpSmoothTime = Time.time + wallJumpSmoothTimeLength;
+
+                    // track jump away tolerance
+                    endJumpAwayTolerance = Time.time + jumpAwayTolerenceLength;
+
+                } else if ((Time.time < endWallJumpTolerance) && faceDirX == lastWallDirX * -1) {
+                    velocity.x = -lastWallDirX * jumpAwayX;
+                    velocity.y = jumpVelocity;
+
+                    // track time since jumped for smoothing
+                    endWallJumpSmoothTime = Time.time + wallJumpSmoothTimeLength;
+                } else {
+                    velocity.y = jumpVelocity;
+
+                    // track jump away tolerance
+                    endJumpAwayTolerance = Time.time + jumpAwayTolerenceLength;
+                }
+                jumpsRemaining--;
+            } else if (Input.GetKeyDown(KeyCode.Mouse1)) {
+                endJumpTolerance = Time.time + jumpToleranceLength;
+            }
+        }
+        if (Time.time < endJumpAwayTolerance && Time.time < endWallJumpTolerance && faceDirX == lastWallDirX * -1 && useJumpAway) {
+            velocity.x = -lastWallDirX * jumpAwayX;
+
+            // track time since jumped for smoothing
+            endWallJumpSmoothTime = Time.time + wallJumpSmoothTimeLength;
+
+            useJumpAway = false;
+        }
+        if (Time.time >= endJumpAwayTolerance) {
+            useJumpAway = true;
+        }
+
+        // if attack key is pressed, perform the attack and remove a attacksRemaining
+        if (Input.GetKeyDown(KeyCode.Mouse0) && !bowOut) {
+            if (attacksRemaining > 0) {
+                endAttackTime = Time.time + attackLength;
+                attacksRemaining--;
+            }
+        }
+        if (Time.time < endAttackTime) {
+            velocity.y = 0;
+            velocity.x = attackVelocity * faceDirX;
+            return velocity;
+        }
+
+        // add gravity
+        velocity.y += gravity * Time.deltaTime;
+
+        // return
+        return velocity;
+    }
+
+    public Arrow LoadArrow() {
+        Debug.Log("Arrow Loaded");
+        endLoadTime = Time.time + loadTime;
+        Arrow arrowClone = Instantiate(arrow, transform.position, transform.rotation);
+        arrowClone.arrowState = Arrow.ArrowState.notched;
+        arrowClone.transform.parent = bow;
+
+        return arrowClone;
+    }
+
+    IEnumerator FireArrow() {
+        if (!firingArrow) {
+            firingArrow = true;
+
+            arrowClone.FireArrow();
+            yield return new WaitForSeconds(fireCoolDownTime);
+
+            if (controller.collisions.below) {
+                arrowClone = LoadArrow();
+            }
+            firingArrow = false;
+        }
+        
+    }
+
+    void UpdateArrowRotation () {
+        if (arrowClone != null) {
+            Vector2 mousePosition = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
+            Vector2 firePointPosition = new Vector2(arrowClone.transform.position.x, arrowClone.transform.position.y);
+            arrowClone.collisions.direction = mousePosition - firePointPosition;
+            arrowClone.collisions.direction.Normalize();
+            Quaternion rotation = Quaternion.Euler(0, 0, Mathf.Atan2(arrowClone.collisions.direction.y, arrowClone.collisions.direction.x) * Mathf.Rad2Deg);
+
+            arrowClone.UpdateRotation(rotation);
+        }
+    }
+
+    public void HitByArrow() {
+        if (!arrowProof) {
+            GameMaster.KillPlayer(this);
+        }
+    }
+}
