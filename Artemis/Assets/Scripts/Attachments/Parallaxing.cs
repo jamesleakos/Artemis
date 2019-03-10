@@ -9,20 +9,26 @@ public class Parallaxing : MonoBehaviour {
 
 	private Transform cam;					// reference to the main cameras transform
 	private Vector3 previousCamPos;			// the position of the camera in the previous frame
+    private Player player;
 
 	// Is called before Start(). Great for references.
 	void Awake () {
 		// set up camera the reference
 		cam = Camera.main.transform;
-	}
+        GameObject searchResult = GameObject.FindGameObjectWithTag("Player");
+        if (searchResult != null) {
+            player = searchResult.GetComponent<Player>();
+        }
+    }
 
 	// Use this for initialization
 	void Start () {
-		// The previous frame had the current frame's camera position
-		previousCamPos = cam.position;
+        // The previous frame had the current frame's camera position
+        //previousCamPos = cam.position;
+        previousCamPos = player.transform.position;
 
-		// asigning coresponding parallaxScales
-		parallaxScales = new float[backgrounds.Length];
+        // asigning coresponding parallaxScales
+        parallaxScales = new float[backgrounds.Length];
 		for (int i = 0; i < backgrounds.Length; i++) {
 			parallaxScales[i] = backgrounds[i].position.z*-1;
 		}
