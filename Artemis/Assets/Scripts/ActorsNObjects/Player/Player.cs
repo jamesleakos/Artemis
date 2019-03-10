@@ -16,7 +16,10 @@ public class Player : MonoBehaviour {
         air_pause,
         ground_pause,
         attacking,
-        wallJumpAway
+        wallJumpAway,
+        powerDash,
+        powerJump,
+        powerReady
     };
     public MovementState movementState;
     #endregion
@@ -53,6 +56,7 @@ public class Player : MonoBehaviour {
     #region Attacking
 
     // attacking
+    bool attacking;
     public float attackVelocity = 40;
     float endAttackTime;
     public float attackLength = 0.1f;
@@ -76,6 +80,24 @@ public class Player : MonoBehaviour {
     float airPauseAcceleration = 0.2f;
     bool airPausing;
     bool loadAnArrow;
+    #endregion
+
+    #region Power Movement
+
+    bool powerMoveReady;
+    float endPowerReadyTime;
+    public float powerMoveReadyLength;
+    float velocityForPowerCharge;
+    bool powerJumpActive;
+    public float powerJumpMultiple = 4;
+    float endPowerJumpTime;
+    float powerJumpVelocity;
+    public float powerJumpLength;
+    bool powerDashActive;
+    public float powerDashVelocity = 80;
+    float endPowerDashTime;
+    public float powerDashLength = 0.2f;
+
     #endregion
 
     // Private Vars
@@ -183,6 +205,10 @@ public class Player : MonoBehaviour {
     const string Respawn = "Respawn";
     const string Walk = "Walk";
     const string Crouch = "Crouch";
+    const string PowerReady = "PowerReady";
+    const string PowerDash = "PowerDash";
+    const string PowerJump = "PowerJump";
+
 
     public enum AnimationState {
         Idle,
@@ -196,7 +222,10 @@ public class Player : MonoBehaviour {
         Death,
         Respawn,
         Walk,
-        Crouch
+        Crouch,
+        PowerReady,
+        PowerDash,
+        PowerJump
     }
     public AnimationState animationState;
 
@@ -233,6 +262,7 @@ public class Player : MonoBehaviour {
 
         gravity = -(2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
         jumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
+        powerJumpVelocity = jumpVelocity * powerJumpMultiple;
 
         jumpsRemaining = maxJumps;
         attacksRemaining = maxAttacks;
@@ -332,6 +362,15 @@ public class Player : MonoBehaviour {
             case AnimationState.Crouch:
                 animator.Play(Crouch);
                 break;
+            case AnimationState.PowerDash:
+                animator.Play(PowerDash);
+                break;
+            case AnimationState.PowerJump:
+                animator.Play(PowerJump);
+                break;
+            case AnimationState.PowerReady:
+                animator.Play(PowerReady);
+                break;
         }
 
         this.animationState = state;
@@ -348,6 +387,9 @@ public class Player : MonoBehaviour {
             SetOrKeepState(AnimationState.Respawn);
         } else if (Time.time < endAttackTime) SetOrKeepState(AnimationState.Attack);
         else if (bowOut) SetOrKeepState(AnimationState.BowOut);
+        else if (powerDashActive) SetOrKeepState(AnimationState.PowerDash);
+        else if (powerJumpActive) SetOrKeepState(AnimationState.PowerJump);
+        else if (powerMoveReady) SetOrKeepState(AnimationState.PowerReady);
         else if (controller.collisions.below && Mathf.Abs(velocity.x) > 0.5f && Input.GetKey(GameMaster.gm.useItem)) SetOrKeepState(AnimationState.Walk);
         else if (controller.collisions.below && Mathf.Abs(velocity.x) > 0.5f) SetOrKeepState(AnimationState.Run);
         else if (controller.collisions.below && Input.GetKey(GameMaster.gm.useItem)) SetOrKeepState(AnimationState.Crouch);
@@ -392,10 +434,15 @@ public class Player : MonoBehaviour {
         if (Input.GetKeyUp(GameMaster.gm.pause) || controller.collisions.below || Time.time > endAirPauseTime) {
             airPausing = false;
         }
+        if (Time.time > endPowerReadyTime) {
+            powerMoveReady = false;
+        }
+
+        velocityForPowerCharge = velocity.x;
 
         if (airPausing) {
             movementState = MovementState.air_pause;
-            // first method - simple
+            
             if (descending) {
                 velocity.y += gravity * airPauseGravityReductionDown * Time.deltaTime;
                 Vector2 targetAirVelocity = new Vector2(velocity.x, velocity.y).normalized * airPauseSpeedMaxDown;
@@ -407,7 +454,6 @@ public class Player : MonoBehaviour {
             }
             return velocity;
         }
-
 
         // setting base speed - with bow is slower - note this doesn't trigger in air, that was taken care of above
         targetVelocityX = input.x * moveSpeed;
@@ -447,38 +493,91 @@ public class Player : MonoBehaviour {
         // jumping and attacking controls
 
         // reset jumping and attacking if on the ground
+        if (wallSliding) {
+            attacking = false;
+        }
         if (wallSliding || controller.collisions.below) {
+            powerMoveReady = false;
+            powerJumpActive = false;
+            powerDashActive = false;
+
             jumpsRemaining = maxJumps;
             attacksRemaining = maxAttacks;
             airPauseRemaining = maxAirPause;
         }
         // if jump is pressed, perform the jump and remove a jumpsRemaining
         if ((Input.GetKeyDown(GameMaster.gm.jump) || (Time.time < endJumpTolerance)) && inputOnFinal) {
-            if (jumpsRemaining > 0) {
-                if (wallSliding) {
-                    movementState = MovementState.wall_jumping;
-                    velocity.x = -lastWallDirX * climbX;
-                    ArtemisJump();
 
-                    // track time since jumped for smoothing
-                    endWallJumpSmoothTime = Time.time + wallJumpSmoothTimeLength;
-                } else {
-                    movementState = MovementState.up_jumping;
-                    ArtemisJump();
+            if (powerMoveReady) {
+                DoPowerJump();
+            } else {
+                if (jumpsRemaining > 0) {
+                    if (wallSliding) {
+                        movementState = MovementState.wall_jumping;
+                        velocity.x = -lastWallDirX * climbX;
+                        ArtemisJump();
+
+                        // track time since jumped for smoothing
+                        endWallJumpSmoothTime = Time.time + wallJumpSmoothTimeLength;
+                    } else {
+                        movementState = MovementState.up_jumping;
+                        ArtemisJump();
+                    }
+                } else if (Input.GetKeyDown(GameMaster.gm.jump)) {
+                    endJumpTolerance = Time.time + jumpToleranceLength;
                 }
-            } else if (Input.GetKeyDown(GameMaster.gm.jump)) {
-                endJumpTolerance = Time.time + jumpToleranceLength;
-            }
+            }            
         }
 
         // if attack key is pressed, perform the attack and remove a attacksRemaining
         if (Input.GetKeyDown(GameMaster.gm.fireDash) && !bowOut && inputOnFinal) {
-            DashAttack();
+            if (powerMoveReady) {
+                DoPowerDash();
+            } else {
+                DashAttack();
+            }
         }
-        if (Time.time < endAttackTime) {
+        if (Time.time > endAttackTime || powerMoveReady) {
+            attacking = false;
+        }
+        if (attacking) {
             movementState = MovementState.attacking;
             velocity.y = 0;
             velocity.x = attackVelocity * faceDirX;
+            return velocity;
+        }
+        if (Time.time > endPowerDashTime) {
+            powerDashActive = false;
+        }
+        if (Time.time > endPowerJumpTime) {
+            powerJumpActive = false;
+        }
+        if (powerDashActive) {
+            movementState = MovementState.powerDash;
+            velocity.y = 0;
+            velocity.x = powerDashVelocity * faceDirX;
+            return velocity;
+        }
+        if (powerJumpActive) {
+            movementState = MovementState.powerJump;
+            //velocity.x = 0;
+        }
+
+        if (powerMoveReady) {
+            movementState = MovementState.powerReady;
+
+            if (descending) {
+                velocity.y += gravity * airPauseGravityReductionDown * Time.deltaTime;
+                Vector2 targetAirVelocity = new Vector2(velocityForPowerCharge, velocity.y).normalized * airPauseSpeedMaxDown;
+                Vector2 newV = new Vector2(velocityForPowerCharge, velocity.y);
+                velocity = Vector2.SmoothDamp(newV, targetAirVelocity, ref airPauseVelocitySmoothing, airPauseAcceleration, Mathf.Infinity, Time.deltaTime);
+            } else {
+                velocity.y += gravity * airPauseGravityReductionUp * Time.deltaTime;
+                Vector2 targetAirVelocity = new Vector2(velocityForPowerCharge, velocity.y).normalized * airPauseSpeedMaxUp;
+                Vector2 newV = new Vector2(velocityForPowerCharge, velocity.y);
+                velocity = Vector2.SmoothDamp(newV, targetAirVelocity, ref airPauseVelocitySmoothing, airPauseAcceleration, Mathf.Infinity, Time.deltaTime);
+            }
+
             return velocity;
         }
 
@@ -500,17 +599,40 @@ public class Player : MonoBehaviour {
 
     void DashAttack() {
         if (attacksRemaining > 0) {
+            attacking = true;
             PlayDashSound();
             endAttackTime = Time.time + attackLength;
             attacksRemaining--;
         }
     }
 
+    void DoPowerDash() {
+        powerMoveReady = false;
+        powerDashActive = true;
+        PlayDashSound();
+        endPowerDashTime = Time.time + powerDashLength;
+    }
+
+    void DoPowerJump() {
+        powerMoveReady = false;
+        powerJumpActive = true;
+        velocity.y = powerJumpVelocity;
+        PlayJumpSound();
+        endPowerJumpTime = Time.time + powerJumpLength;
+    }
+
+
     void AirPause() {
+        powerMoveReady = false;
         airPausing = true;
         airPauseRemaining--;
         endAirPauseTime = Time.time + airPauseLength;
         descending = ((velocity.y < 0) ? true : false);
+    }
+
+    public void SetPowerMoveReady () {
+        powerMoveReady = true;
+        endPowerReadyTime = Time.time + powerMoveReadyLength;
     }
     #endregion
 
