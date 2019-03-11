@@ -173,7 +173,8 @@ public class Player : MonoBehaviour {
 
     // random bools
     bool useJumpAway;
-    bool descending;
+    bool falling;
+    bool descendingAtAirPauseStart;
     bool arrowProof = false;
     #endregion
 
@@ -443,7 +444,7 @@ public class Player : MonoBehaviour {
         if (airPausing) {
             movementState = MovementState.air_pause;
             
-            if (descending) {
+            if (descendingAtAirPauseStart) {
                 velocity.y += gravity * airPauseGravityReductionDown * Time.deltaTime;
                 Vector2 targetAirVelocity = new Vector2(velocity.x, velocity.y).normalized * airPauseSpeedMaxDown;
                 velocity = Vector2.SmoothDamp(velocity, targetAirVelocity, ref airPauseVelocitySmoothing, airPauseAcceleration, Mathf.Infinity, Time.deltaTime);
@@ -488,6 +489,8 @@ public class Player : MonoBehaviour {
 
         if (controller.collisions.above || controller.collisions.below) {
             velocity.y = 0;
+        } else if (!wallSliding) {
+            falling = ((velocity.y < 0) ? true : false);
         }
 
         // jumping and attacking controls
@@ -566,7 +569,7 @@ public class Player : MonoBehaviour {
         if (powerMoveReady) {
             movementState = MovementState.powerReady;
 
-            if (descending) {
+            if (descendingAtAirPauseStart) {
                 velocity.y += gravity * airPauseGravityReductionDown * Time.deltaTime;
                 Vector2 targetAirVelocity = new Vector2(velocityForPowerCharge, velocity.y).normalized * airPauseSpeedMaxDown;
                 Vector2 newV = new Vector2(velocityForPowerCharge, velocity.y);
@@ -627,7 +630,7 @@ public class Player : MonoBehaviour {
         airPausing = true;
         airPauseRemaining--;
         endAirPauseTime = Time.time + airPauseLength;
-        descending = ((velocity.y < 0) ? true : false);
+        descendingAtAirPauseStart = ((velocity.y < 0) ? true : false);
     }
 
     public void SetPowerMoveReady () {
