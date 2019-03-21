@@ -17,6 +17,11 @@ public class WaypointMovement : MonoBehaviour {
     float percentBetweenWaypoints;
     float nextMoveTime;
 
+
+    // curves
+    public bool curve = false;
+
+
     Player player;
 
     void Start() {
