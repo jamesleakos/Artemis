@@ -63,6 +63,9 @@ public class AudioManager : MonoBehaviour
 	[SerializeField]
 	Sound[] sounds;
 
+    public delegate void SFXSet(float setVolume, float mainVolume);
+    public static event SFXSet OnSFXSet;
+
 	void Awake()
 	{
 		if (instance != null)
@@ -141,12 +144,13 @@ public class AudioManager : MonoBehaviour
         PlayerPrefs.SetFloat("MainVolume", setVolume);
 
         mainVolume = defaultMainVolume * setVolume;
-        SetMusic(PlayerPrefs.GetFloat("MusicVolume"));
-        SetSFX(PlayerPrefs.GetFloat("SFXVolume"));
+        SetMusic(PlayerPrefs.GetFloat("MusicVolume",1f));
+        SetSFX(PlayerPrefs.GetFloat("SFXVolume",1f));
     }
 
     public void SetSFX(float setVolume) {
         PlayerPrefs.SetFloat("SFXVolume", setVolume);
+        //OnSFXSet(setVolume, mainVolume);
 
         for (int i = 0; i < sounds.Length; i++) {
             if (sounds[i].soundType == Sound.SoundType.sfx) {

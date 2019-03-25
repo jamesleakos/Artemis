@@ -66,7 +66,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1992171377
-  m_SortingLayer: -3
+  m_SortingLayer: -4
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 44f60f3e47718f44b8e031471d2b1676, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -145,6 +145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c626ff8d7e689b4494e80f05023b898, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultVolume: 1
 --- !u!114 &114267087165636180
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,6 +165,7 @@ MonoBehaviour:
   cyclic: 0
   waitTime: 0
   easeAmount: 1
+  curve: 0
 --- !u!95 &95901675001771700
 Animator:
   serializedVersion: 3
@@ -204,9 +206,9 @@ AudioSource:
   Priority: 119
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 40
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -214,23 +216,50 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.01
-      value: 0.73423004
-      inSlope: -2.7044635
-      outSlope: -2.7044635
+      time: 0
+      value: 1.0183334
+      inSlope: -0.38148624
+      outSlope: -0.38148624
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.13636363
+      outWeight: 0.6309203
     - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: -1.010101
-      outSlope: -1.010101
+      time: 0.18099058
+      value: 0.8544388
+      inSlope: -1.5414884
+      outSlope: -1.5414884
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.4400583
+      outWeight: 0.959791
+    - serializedVersion: 3
+      time: 0.34545594
+      value: 0.45167542
+      inSlope: -2.3477957
+      outSlope: -2.3477957
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.7673217
+    - serializedVersion: 3
+      time: 0.48762512
+      value: 0.17721558
+      inSlope: -0.81345624
+      outSlope: -0.81345624
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 1
+      outWeight: 0.32255185
+    - serializedVersion: 3
+      time: 0.9999998
+      value: 0.0061035156
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -345,7 +374,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1992171377
-  m_SortingLayer: -3
+  m_SortingLayer: -4
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 4b55a617c31aebf4486e9847ed25299a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -424,7 +453,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1992171377
-  m_SortingLayer: -3
+  m_SortingLayer: -4
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 633d1dec5f09d5d4bbafc3a3c300caea, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -503,7 +532,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1992171377
-  m_SortingLayer: -3
+  m_SortingLayer: -4
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 22a504713a8cbb0468e460f9b26d149e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
