@@ -11,6 +11,7 @@ public class MenuSystem : MonoBehaviour {
     [Header("Objects Settings")]
     [Space]
     public GameObject fadeMask;
+    public MaskController fadeMaskController;
     public GameObject distanceFog;
     public GameObject splashScreen;
     public GameObject mainScreen;
@@ -61,6 +62,7 @@ public class MenuSystem : MonoBehaviour {
         camZoom = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraZoom>();
         audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
         gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
+        fadeMaskController = fadeMask.GetComponent<MaskController>();
 
         basicSettings();
         SetPlayerPrefs();
@@ -301,10 +303,14 @@ public class MenuSystem : MonoBehaviour {
             }
         } else {
             currentMenuScreen = CurrentMenuScreen.none;
+
+            fadeMask.SetActive(true);
+            fadeMaskController.LightenMask();
         }
     }
 
     void ResetMenus() {
+        fadeMask.SetActive(true);
         levelSelection.SetActive(false);
         pauseScreen.SetActive(false);
         mainScreen.SetActive(false);
@@ -316,6 +322,7 @@ public class MenuSystem : MonoBehaviour {
     // Fade Effect
     public void fadeInEffect() {
         fadeMask.SetActive(true);
+        fadeMaskController.DarkenMask();
         // animator on fade mask takes over from here
     }
     #endregion
@@ -325,13 +332,12 @@ public class MenuSystem : MonoBehaviour {
     public void setLevelToLoad(int levelInt) {
         fadeInEffect();
         levelToLoad = levelInt;
-        SceneManager.LoadScene(levelToLoad);
     }
     public void LoadOrRespawn() {
         if (gm.respawnState == GameMaster.RespawnState.respawn) {
-            camera.position = gm.spawnPoint;
+            //camera.position = gm.spawnPoint;
             gm.RespawnPlayer();
-            fadeMask.SetActive(false);
+            fadeMaskController.LightenMask();
         } else if (gm.respawnState == GameMaster.RespawnState.reset) {
             loadLevel();
         }

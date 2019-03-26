@@ -279,13 +279,13 @@ public class Player : MonoBehaviour {
         midriffBone = TransformDeepChildExtension.FindDeepChild(gameObject.transform, "Midriff Bone");
 
         faceDirX = 1;
-        StartCoroutine(LateStart(0.2f));
+        //StartCoroutine(LateStart(1.2f));
     }
 
-    IEnumerator LateStart(float waitTime) {
-        yield return new WaitForSeconds(waitTime);
-        PlayRespawnSound();
-    }
+   // IEnumerator LateStart(float waitTime) {
+   //     yield return new WaitForSeconds(waitTime);
+   //     PlayRespawnSound();
+   // }
 
     void Update() {
         if (artemisState != ArtemisState.dead && artemisState != ArtemisState.respawning) {
@@ -746,7 +746,7 @@ public class Player : MonoBehaviour {
             audioManager.PlaySound("ArtemisDeath");
         }
     }
-    void PlayRespawnSound() {
+     public void PlayRespawnSound() {
         if (!muteSound) {
             audioManager.PlaySound("ArtemisRespawn");
         }
