@@ -148,11 +148,18 @@ public class Spiderwalker : MonoBehaviour {
     float baseVelocityX;
     #endregion
 
+    #region Audio
+    public AudioSource footstepSound;
+    #endregion
+
     Controller2D controller;
     private Collider2D thisCollider;
 	AudioManager audioManager;
 
     void Start() {
+
+        footstepSound = GetComponent<AudioSource>();
+
         controller = GetComponent<Controller2D>();
         thisCollider = GetComponent<Collider2D>();
         animator = GetComponent<Animator>();
@@ -649,4 +656,7 @@ public class Spiderwalker : MonoBehaviour {
 	void PlayFireSound() {
 		audioManager.PlaySound ("SpiderFire");
 	}
+    public void PlayFootstepSound() {
+        footstepSound.Play();
+    }
 }

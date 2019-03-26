@@ -343,7 +343,6 @@ public class MenuSystem : MonoBehaviour {
         }
     }
     public void loadLevel() {
-        print("this activates");
         SceneManager.LoadScene(levelToLoad);
     }
     void OnEnable() {

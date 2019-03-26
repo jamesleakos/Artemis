@@ -8,6 +8,8 @@ public class RechargeParticle : MonoBehaviour {
     public float refreshTime;
     bool refreshing;
 
+    AudioManager audioManager;
+
 	#region Animation
 	Animator animator;
 	const string inactiveIdle = "inactiveIdle";
@@ -22,7 +24,9 @@ public class RechargeParticle : MonoBehaviour {
 	void Start() {
 		animator = gameObject.GetComponent<Animator>();
 		animationState = AnimationState.activeIdle;
-	}
+
+        audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
+    }
 
 	void Update () {
 		if (animationState == AnimationState.inactiveIdle && Time.time > activationTime) {
@@ -59,4 +63,7 @@ public class RechargeParticle : MonoBehaviour {
 		animationState = AnimationState.deactivating;
 	}
 
+    void PlayFlareSound() {
+        audioManager.PlaySound("ParticleFlare");
+    }
 }
