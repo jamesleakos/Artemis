@@ -25,7 +25,7 @@ public class TwoBirds : MonoBehaviour {
     public bool curveOn = false;
     float curveOffset;
     float curveAngle;
-    Vector3 newh;
+    Vector3 deviationVector;
     #endregion
 
     #region Movement States
@@ -64,9 +64,11 @@ public class TwoBirds : MonoBehaviour {
     float searchInterval = 0.5f;
     #endregion
 
-    void Start() {
+    Transform RotationObject;
 
-        animator = GetComponent<Animator>();
+    void Start() {
+        RotationObject = TransformDeepChildExtension.FindDeepChild(gameObject.transform, "RotationObject");
+        animator = RotationObject.GetComponent<Animator>();
 
         globalWaypoints = new Vector3[localWaypoints.Length];
         for (int i = 0; i < localWaypoints.Length; i++) {
@@ -95,17 +97,21 @@ public class TwoBirds : MonoBehaviour {
             velocity = CalculatePlatformMovement();
             transform.Translate(velocity);
 
+            Quaternion tempRotation = Quaternion.Euler(0, 0, Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg);
+            //tempRotation *= Quaternion.Euler(0, 0, -90); // this adds a 90 degrees Y rotation
+            RotationObject.rotation = tempRotation;
+
         } else if (movementState == MovementState.followingPlayer) {
             if (player != null) {
                 transform.position = player.transform.position;
             } else {
-                movementState = MovementState.flying;
+                //movementState = MovementState.flying;
             }
 
-            if (Time.time > endFollowPlayer) {
-                movementState = MovementState.flying;
-                endFollowPlayerCooldown = Time.time + followPlayerCooldownLength;
-            }
+            //if (Time.time > endFollowPlayer) {
+            //    movementState = MovementState.flying;
+            //    endFollowPlayerCooldown = Time.time + followPlayerCooldownLength;
+            //}
         }
 
         DetermineAnim();
@@ -128,12 +134,12 @@ public class TwoBirds : MonoBehaviour {
     }
 
     void DetermineAnim() {
-        Vector3 v = gameObject.transform.localScale;
-        gameObject.transform.localScale = new Vector3(Mathf.Abs(v.x) * Mathf.Sign(velocity.x), v.y, v.z);
 
         if (movementState == MovementState.flying) {
             animator.Play(flying);
         } else if (movementState == MovementState.circling) {
+            animator.Play(circling);
+        } else if (movementState == MovementState.followingPlayer) {
             animator.Play(circling);
         }
     }
@@ -172,9 +178,26 @@ public class TwoBirds : MonoBehaviour {
             if (curveOn) {
                 fromWaypointIndex %= globalWaypoints.Length;
                 toWaypointIndex = (fromWaypointIndex + 1) % globalWaypoints.Length;
-                newh = Vector3.Cross(globalWaypoints[toWaypointIndex] - globalWaypoints[fromWaypointIndex],Vector3.forward);
-                newh.Normalize();
-                newh = newh * (globalWaypoints[toWaypointIndex] - globalWaypoints[fromWaypointIndex]).magnitude/2;
+                                
+                Vector3 newPathVector = globalWaypoints[toWaypointIndex] - globalWaypoints[fromWaypointIndex];
+                float newTestAngle = Vector3.SignedAngle(newPathVector, velocity, Vector3.forward);
+                if (Mathf.Abs(newTestAngle) > 90) {
+                    deviationVector = new Vector3(0f, 0f, 0f);
+                    print("greater than 90");
+                } else {
+                    // this may still be fine - hard to say without calculating the correct scaling first
+                    float deviationHeight = 8 * (newPathVector.magnitude / 2 * Mathf.Sin(newTestAngle * Mathf.Deg2Rad)) * (1 - Mathf.Sin((Mathf.PI / 2 - newTestAngle) * Mathf.Deg2Rad));
+                    Vector3 perpendicularVector = Vector3.Cross(Vector3.forward, newPathVector);
+                    float newTestAngle2 = Vector3.SignedAngle(newPathVector, perpendicularVector, Vector3.forward);
+                    if (Mathf.Sign(newTestAngle2) == Mathf.Sign(newTestAngle)) {
+                        print("triggering");
+                        perpendicularVector = perpendicularVector * -1;
+                    }
+                    Vector3 perpendicularVectorNormalized = perpendicularVector.normalized;
+                    deviationVector = perpendicularVectorNormalized * deviationHeight;
+                    print("less than 90");
+                    print(deviationVector);
+                }
             }
         }
 
@@ -182,8 +205,8 @@ public class TwoBirds : MonoBehaviour {
 
         if (curveOn) {
             float scalehfloat = (1 - 2 * Mathf.Abs(0.5f - percentBetweenWaypoints));
-            Vector3 scaledH = scalehfloat * newh;
-            newPosFinal = newPos + scaledH;
+            Vector3 scaledDeviationVector = scalehfloat * deviationVector;
+            newPosFinal = newPos + scaledDeviationVector;
         }
 
         return newPosFinal - transform.position;

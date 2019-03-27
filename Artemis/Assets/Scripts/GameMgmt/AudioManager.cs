@@ -45,7 +45,6 @@ public class Sound
 	}
 
     public void ChangeVolume() {
-        Debug.Log(source);
         source.volume = volume * (1 + Random.Range(-randomVolume / 2f, randomVolume / 2f));
     }
 
