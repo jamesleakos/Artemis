@@ -1160,8 +1160,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   patrolNodes: []
   destPoint: 0
-  localMinInvestigateRange: {x: -7.8, y: 0, z: 0}
-  localMaxInvestigateRange: {x: 8.05, y: 0, z: 0}
+  localMinInvestigateRange: {x: 0, y: 0, z: 0}
+  localMaxInvestigateRange: {x: 0, y: 0, z: 0}
   patrolSpeed: 3
   flyingSpeed: 15
   movementState: 0
@@ -1174,7 +1174,7 @@ MonoBehaviour:
   firingState: 0
   collisionMask:
     serializedVersion: 2
-    m_Bits: 34560
+    m_Bits: 819968
   changeFaceDirLength: 1
   patrolSwitchTime: 1
   alertSwitchTime: 1

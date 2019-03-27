@@ -319,10 +319,12 @@ public class Deer : MonoBehaviour {
                     SwitchToScared();
                 } else {
                     if (Time.time > endAlertTime) {
-                        if (playerTransform.position.x > globalMinFriendRange.x && playerTransform.position.x < globalMaxFriendRange.x) { // player inside friend zone
-                            SwitchToFriendly();
-                        } else {
-                            SwitchToGrazing();
+                        if (playerTransform != null) {
+                            if (playerTransform.position.x > globalMinFriendRange.x && playerTransform.position.x < globalMaxFriendRange.x) { // player inside friend zone
+                                SwitchToFriendly();
+                            } else {
+                                SwitchToGrazing();
+                            }
                         }
                     }
                 }
@@ -354,21 +356,23 @@ public class Deer : MonoBehaviour {
             spawnTriggered = true;
             gm.UpdateSpawn(globalSpawnPoint);
         }
-
-        if (playerTransform.position.x > globalMinInhabitRange.x && playerTransform.position.x < globalMaxInhabitRange.x) {
-            if (lastPlacePlayerSeen != null) {
-                faceDirX = -1 * (int)Mathf.Sign(lastPlacePlayerSeen.position.x - gameObject.transform.position.x);
-            }
-            if (Mathf.Abs(playerTransform.position.x - transform.position.x) < 1.3f) {
-                friendlyActionState = FriendlyActionState.snuggle;
-                velocity.x = 0;
+        if (playerTransform != null) {
+            if (playerTransform.position.x > globalMinInhabitRange.x && playerTransform.position.x < globalMaxInhabitRange.x) {
+                if (lastPlacePlayerSeen != null) {
+                    faceDirX = -1 * (int)Mathf.Sign(lastPlacePlayerSeen.position.x - gameObject.transform.position.x);
+                }
+                if (Mathf.Abs(playerTransform.position.x - transform.position.x) < 1.3f) {
+                    friendlyActionState = FriendlyActionState.snuggle;
+                    velocity.x = 0;
+                } else {
+                    friendlyActionState = FriendlyActionState.walk;
+                    velocity.x = -1 * friendlySpeed * faceDirX;
+                }
             } else {
-                friendlyActionState = FriendlyActionState.walk;
-                velocity.x = -1 * friendlySpeed * faceDirX;
+                SwitchToGrazing();
             }
-        } else {
-            SwitchToGrazing();
         }
+        
     }
 
     void ScaredBehavior() {

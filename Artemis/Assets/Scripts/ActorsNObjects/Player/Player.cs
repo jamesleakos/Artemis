@@ -209,6 +209,7 @@ public class Player : MonoBehaviour {
     const string PowerReady = "PowerReady";
     const string PowerDash = "PowerDash";
     const string PowerJump = "PowerJump";
+    const string FallIdle = "FallIdle";
 
 
     public enum AnimationState {
@@ -226,7 +227,8 @@ public class Player : MonoBehaviour {
         Crouch,
         PowerReady,
         PowerDash,
-        PowerJump
+        PowerJump,
+        FallIdle
     }
     public AnimationState animationState;
 
@@ -234,6 +236,7 @@ public class Player : MonoBehaviour {
 
     #region Sound
     public bool muteSound;
+    bool playNoiseReady;
     #endregion
 
     [HideInInspector]
@@ -372,6 +375,9 @@ public class Player : MonoBehaviour {
             case AnimationState.PowerReady:
                 animator.Play(PowerReady);
                 break;
+            case AnimationState.FallIdle:
+                animator.Play(FallIdle);
+                break;
         }
 
         this.animationState = state;
@@ -397,6 +403,7 @@ public class Player : MonoBehaviour {
         else if (controller.collisions.below) SetOrKeepState(AnimationState.Idle);
         else if (wallSliding) SetOrKeepState(AnimationState.WallslideIdle);
         else if (jumpAnimOn) SetOrKeepState(AnimationState.Jump);
+        //else if (falling) SetOrKeepState(AnimationState.FallIdle);
         else if (jumpsRemaining > 0) SetOrKeepState(AnimationState.JumpIdle);
         else SetOrKeepState(AnimationState.SecondJumpIdle);
     }
@@ -491,6 +498,7 @@ public class Player : MonoBehaviour {
             velocity.y = 0;
         } else if (!wallSliding) {
             falling = ((velocity.y < 0) ? true : false);
+            playNoiseReady = true;
         }
 
         // jumping and attacking controls
@@ -500,6 +508,10 @@ public class Player : MonoBehaviour {
             attacking = false;
         }
         if (wallSliding || controller.collisions.below) {
+            if (playNoiseReady) {
+                PlayLandingSound();
+                playNoiseReady = false;
+            }
             powerMoveReady = false;
             powerJumpActive = false;
             powerDashActive = false;
@@ -723,8 +735,15 @@ public class Player : MonoBehaviour {
     #endregion
 
     #region Make Sounds
-    void PlayFootstepSound() {
-
+    public void PlayFootstepSound() {
+        if (!muteSound) {
+            audioManager.PlaySound("ArtemisFootstep");
+        }
+    }
+    public void PlayLandingSound() {
+        if (!muteSound) {
+            audioManager.PlaySound("ArtemisLanding");
+        }
     }
     void PlayArrowReleaseSound() {
         if (!muteSound) {
@@ -746,7 +765,7 @@ public class Player : MonoBehaviour {
             audioManager.PlaySound("ArtemisDeath");
         }
     }
-     public void PlayRespawnSound() {
+    public void PlayRespawnSound() {
         if (!muteSound) {
             audioManager.PlaySound("ArtemisRespawn");
         }

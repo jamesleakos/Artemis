@@ -8,6 +8,8 @@ public class PowerParticle : MonoBehaviour {
     public float refreshTime;
     bool refreshing;
 
+    AudioManager audioManager;
+
     #region Animation
     Animator animator;
     const string inactiveIdle = "inactiveIdle";
@@ -22,6 +24,8 @@ public class PowerParticle : MonoBehaviour {
     void Start() {
         animator = gameObject.GetComponent<Animator>();
         animationState = AnimationState.activeIdle;
+
+        audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
     }
 
     void Update() {
@@ -55,6 +59,10 @@ public class PowerParticle : MonoBehaviour {
     public void PlayDeactivating() {
         animator.Play(deactivating);
         animationState = AnimationState.deactivating;
+    }
+
+    void PlayFlareSound() {
+        audioManager.PlaySound("ParticleFlare");
     }
 
 }

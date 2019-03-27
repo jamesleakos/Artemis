@@ -45,6 +45,7 @@ public class Sound
 	}
 
     public void ChangeVolume() {
+        Debug.Log(source);
         source.volume = volume * (1 + Random.Range(-randomVolume / 2f, randomVolume / 2f));
     }
 
@@ -137,7 +138,6 @@ public class AudioManager : MonoBehaviour
         }
 
         // no sound with _name
-        Debug.LogWarning("AudioManager: Sound not found in list, " + _name);
     }
 
     public void SetMain(float setVolume) {

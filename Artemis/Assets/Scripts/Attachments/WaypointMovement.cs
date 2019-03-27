@@ -23,6 +23,7 @@ public class WaypointMovement : MonoBehaviour {
     public bool curveOn = false;
     float curveOffset;
     float curveAngle;
+    Vector3 newh;
 
 
     Player player;
@@ -77,33 +78,10 @@ public class WaypointMovement : MonoBehaviour {
                 }
             }
             nextMoveTime = Time.time + waitTime;
-
-            if (curveOn) {
-                Vector3 newVect = globalWaypoints[toWaypointIndex] - globalWaypoints[fromWaypointIndex];
-                float newTestAngle = Vector3.SignedAngle(newVect, velocity, Vector3(0, 0, 1));
-                if (Mathf.ABS(newTestAngle > 90)) {
-                    //circle and then set to something 
-                } else {
-                    //float h = (newVect.length/2*Mathf.sin(newTestAngle in degress/rads))) * (1 - sin(pi/2 - a)))
-                    Vector3 perpendicular = Vector3.Cross(Vector3.forward, newVect);
-                    float newTestAngle2 = Vector3.SignedAngle(newVect, perpendicular, Vector3(0, 0, 1));
-                    //check if signs match, if not multply perp by -1
-                    new Vector3 shortperp = perpendicular.normalized;
-                    Vector3 newh = shortperp * h;
-                }
-            }
-            Quaternion rotation = Quaternion.Euler(0, 0, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
-
-            rotation *= Quaternion.Euler(0, 0, -90); // this adds a 90 degrees Y rotation
         }
 
-        Vector3 newPosFinal = newPos;
 
-        if (curveOn) {
-            newPosFinal = newPos + (1 - 2 * Mathf.Abs(0.5f - percentBetweenWaypoints) * newh);
-        }
-
-        return newPosFinal - transform.position;
+        return newPos - transform.position;
     }
 
     void OnDrawGizmos() {
