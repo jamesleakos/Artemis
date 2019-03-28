@@ -34,8 +34,8 @@ public class Sound
 
 	public void Play()
 	{
-		source.volume = volume * (1 + Random.Range(-randomVolume / 2f, randomVolume / 2f));
-		source.pitch = pitch * (1 + Random.Range(-randomPitch / 2f, randomPitch / 2f));
+        source.volume = volume * (1 + Random.Range(-randomVolume / 2f, randomVolume / 2f));
+        source.pitch = pitch * (1 + Random.Range(-randomPitch / 2f, randomPitch / 2f));
 		source.Play();
 	}
 
@@ -63,8 +63,8 @@ public class AudioManager : MonoBehaviour
 	[SerializeField]
 	Sound[] sounds;
 
-    public delegate void SFXSet(float setVolume, float mainVolume);
-    public static event SFXSet OnSFXSet;
+    //public delegate void SFXSet(float setVolume, float mainVolume);
+    //public static event SFXSet OnSFXSet;
 
 	void Awake()
 	{
@@ -164,7 +164,6 @@ public class AudioManager : MonoBehaviour
         for (int i = 0; i < sounds.Length; i++) {
             if (sounds[i].soundType == Sound.SoundType.music) {
                 sounds[i].volume = sounds[i].defaultVolume * setVolume * mainVolume;
-                sounds[i].ChangeVolume();
             }
         }
     }
