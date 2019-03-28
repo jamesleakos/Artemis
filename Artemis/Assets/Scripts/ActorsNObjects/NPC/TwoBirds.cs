@@ -25,7 +25,10 @@ public class TwoBirds : MonoBehaviour {
     public bool curveOn = false;
     float curveOffset;
     float curveAngle;
+    float radius;
+    float deviationHeight;
     Vector3 deviationVector;
+    Vector3 newPathVector;
     #endregion
 
     #region Movement States
@@ -179,14 +182,15 @@ public class TwoBirds : MonoBehaviour {
                 fromWaypointIndex %= globalWaypoints.Length;
                 toWaypointIndex = (fromWaypointIndex + 1) % globalWaypoints.Length;
                                 
-                Vector3 newPathVector = globalWaypoints[toWaypointIndex] - globalWaypoints[fromWaypointIndex];
+                newPathVector = globalWaypoints[toWaypointIndex] - globalWaypoints[fromWaypointIndex];
                 float newTestAngle = Vector3.SignedAngle(newPathVector, velocity, Vector3.forward);
                 if (Mathf.Abs(newTestAngle) > 90) {
                     deviationVector = new Vector3(0f, 0f, 0f);
                     print("greater than 90");
                 } else {
                     // this may still be fine - hard to say without calculating the correct scaling first
-                    float deviationHeight = 8 * (newPathVector.magnitude / 2 * Mathf.Sin(newTestAngle * Mathf.Deg2Rad)) * (1 - Mathf.Sin((Mathf.PI / 2 - newTestAngle) * Mathf.Deg2Rad));
+                    radius = (newPathVector.magnitude / 2 * Mathf.Sin(newTestAngle * Mathf.Deg2Rad));
+                    deviationHeight = radius * (1 - Mathf.Sin(Mathf.PI / 2 - (newTestAngle * Mathf.Deg2Rad)));
                     Vector3 perpendicularVector = Vector3.Cross(Vector3.forward, newPathVector);
                     float newTestAngle2 = Vector3.SignedAngle(newPathVector, perpendicularVector, Vector3.forward);
                     if (Mathf.Sign(newTestAngle2) == Mathf.Sign(newTestAngle)) {
@@ -204,8 +208,21 @@ public class TwoBirds : MonoBehaviour {
         Vector3 newPosFinal = newPos;
 
         if (curveOn) {
-            float scalehfloat = (1 - 2 * Mathf.Abs(0.5f - percentBetweenWaypoints));
-            Vector3 scaledDeviationVector = scalehfloat * deviationVector;
+            float finalDeviationMagnitude;
+            if (percentBetweenWaypoints < 0.5f) {
+                finalDeviationMagnitude = Mathf.sqrt(Mathf.pow(radius, 2) - Mathf.pow(newPathVector.magnitude / 2 - (percentBetweenWaypoints * newPathVector.magnitude), 2)) -
+                (radius - deviationHeight);
+            } else if (percentBetweenWaypoints > 0.5f && percentBetweenWaypoints < 1f) {
+                finalDeviationMagnitude = Mathf.sqrt(Mathf.pow(radius, 2) - Mathf.pow(newPathVector.magnitude / 2 - ((1f - percentBetweenWaypoints) * newPathVector.magnitude), 2)) -
+                (radius - deviationHeight);
+            } else if (percentBetweenWaypoints == 0.5f) {
+                finalDeviationMagnitude = deviationHeight;
+            } else {
+                finalDeviationMagnitude = 0;
+            }
+
+            Vector3 scaledDeviationVector = finalDeviationMagnitude * deviationVector.normalized;
+
             newPosFinal = newPos + scaledDeviationVector;
         }
 
