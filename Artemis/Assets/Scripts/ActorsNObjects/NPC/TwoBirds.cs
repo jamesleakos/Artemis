@@ -50,13 +50,17 @@ public class TwoBirds : MonoBehaviour {
     #endregion
 
     #region Following Player
-    public float followPlayerLength;
-    float endFollowPlayer;
+    //public float followPlayerLength;
+    //float endFollowPlayer;
 
-    public float followPlayerCooldownLength;
-    float endFollowPlayerCooldown;
+    //public float followPlayerCooldownLength;
+    //float endFollowPlayerCooldown;
 
+    public bool playerFollower;
     public float followPlayerDistance;
+
+    bool inSwitchPosition = false;
+
     #endregion
 
     #region Player Target 
@@ -91,9 +95,10 @@ public class TwoBirds : MonoBehaviour {
 
         } else if (movementState == MovementState.flying) {
             if (player != null) {
-                if (Time.time > endFollowPlayerCooldown && (Mathf.Abs((player.transform.position - transform.position).magnitude) < followPlayerDistance)) {
+                // if (Time.time > endFollowPlayerCooldown) {
+                if (playerFollower && (Mathf.Abs((player.transform.position - transform.position).magnitude) < followPlayerDistance)) {
                     movementState = MovementState.followingPlayer;
-                    endFollowPlayer = Time.time + followPlayerLength;
+                    //endFollowPlayer = Time.time + followPlayerLength;
                 }
             }
 
@@ -140,9 +145,9 @@ public class TwoBirds : MonoBehaviour {
 
         if (movementState == MovementState.flying) {
             animator.Play(flying);
-        } else if (movementState == MovementState.circling) {
+        } else if (movementState == MovementState.circling && inSwitchPosition) {
             animator.Play(circling);
-        } else if (movementState == MovementState.followingPlayer) {
+        } else if (movementState == MovementState.followingPlayer && inSwitchPosition) {
             animator.Play(circling);
         }
     }
@@ -165,7 +170,7 @@ public class TwoBirds : MonoBehaviour {
         float easedPercentBetweenWaypoints = Ease(percentBetweenWaypoints);
 
         Vector3 newPos = Vector3.Lerp(globalWaypoints[fromWaypointIndex], globalWaypoints[toWaypointIndex], easedPercentBetweenWaypoints);
-
+        
         if (percentBetweenWaypoints >= 1) {
             percentBetweenWaypoints = 0;
             fromWaypointIndex++;
@@ -178,53 +183,62 @@ public class TwoBirds : MonoBehaviour {
             }
             nextMoveTime = Time.time + waitTime;
 
-            if (curveOn) {
-                fromWaypointIndex %= globalWaypoints.Length;
-                toWaypointIndex = (fromWaypointIndex + 1) % globalWaypoints.Length;
-                                
-                newPathVector = globalWaypoints[toWaypointIndex] - globalWaypoints[fromWaypointIndex];
-                float newTestAngle = Vector3.SignedAngle(newPathVector, velocity, Vector3.forward);
-                if (Mathf.Abs(newTestAngle) > 90) {
-                    deviationVector = new Vector3(0f, 0f, 0f);
-                    print("greater than 90");
-                } else {
-                    // this may still be fine - hard to say without calculating the correct scaling first
-                    radius = (newPathVector.magnitude / 2 * Mathf.Sin(newTestAngle * Mathf.Deg2Rad));
-                    deviationHeight = radius * (1 - Mathf.Sin(Mathf.PI / 2 - (newTestAngle * Mathf.Deg2Rad)));
-                    Vector3 perpendicularVector = Vector3.Cross(Vector3.forward, newPathVector);
-                    float newTestAngle2 = Vector3.SignedAngle(newPathVector, perpendicularVector, Vector3.forward);
-                    if (Mathf.Sign(newTestAngle2) == Mathf.Sign(newTestAngle)) {
-                        print("triggering");
-                        perpendicularVector = perpendicularVector * -1;
-                    }
-                    Vector3 perpendicularVectorNormalized = perpendicularVector.normalized;
-                    deviationVector = perpendicularVectorNormalized * deviationHeight;
-                    print("less than 90");
-                    print(deviationVector);
-                }
-            }
-        }
+            #region Broken Curve Code
+            //if (curveOn) {
+            //    fromWaypointIndex %= globalWaypoints.Length;
+            //    toWaypointIndex = (fromWaypointIndex + 1) % globalWaypoints.Length;
 
+            //    newPathVector = globalWaypoints[toWaypointIndex] - globalWaypoints[fromWaypointIndex];
+            //    float newTestAngle = Vector3.SignedAngle(newPathVector, velocity, Vector3.forward);
+            //    if (Mathf.Abs(newTestAngle) > 90) {
+            //        deviationVector = new Vector3(0f, 0f, 0f);
+            //    } else {
+            //        // this may still be fine - hard to say without calculating the correct scaling first
+            //        radius = (newPathVector.magnitude / 2 * Mathf.Sin(newTestAngle * Mathf.Deg2Rad));
+            //        deviationHeight = radius * (1 - Mathf.Sin(Mathf.PI / 2 - (newTestAngle * Mathf.Deg2Rad)));
+            //        Vector3 perpendicularVector = Vector3.Cross(Vector3.forward, newPathVector);
+            //        float newTestAngle2 = Vector3.SignedAngle(newPathVector, perpendicularVector, Vector3.forward);
+            //        if (Mathf.Sign(newTestAngle2) == Mathf.Sign(newTestAngle)) {
+            //            perpendicularVector = perpendicularVector * -1;
+            //        }
+            //        Vector3 perpendicularVectorNormalized = perpendicularVector.normalized;
+            //        deviationVector = perpendicularVectorNormalized * deviationHeight;
+            //    }
+            //}
+            #endregion
+        }
         Vector3 newPosFinal = newPos;
 
-        if (curveOn) {
-            float finalDeviationMagnitude;
-            if (percentBetweenWaypoints < 0.5f) {
-                finalDeviationMagnitude = Mathf.sqrt(Mathf.pow(radius, 2) - Mathf.pow(newPathVector.magnitude / 2 - (percentBetweenWaypoints * newPathVector.magnitude), 2)) -
-                (radius - deviationHeight);
-            } else if (percentBetweenWaypoints > 0.5f && percentBetweenWaypoints < 1f) {
-                finalDeviationMagnitude = Mathf.sqrt(Mathf.pow(radius, 2) - Mathf.pow(newPathVector.magnitude / 2 - ((1f - percentBetweenWaypoints) * newPathVector.magnitude), 2)) -
-                (radius - deviationHeight);
-            } else if (percentBetweenWaypoints == 0.5f) {
-                finalDeviationMagnitude = deviationHeight;
-            } else {
-                finalDeviationMagnitude = 0;
-            }
+        #region Broken Curve Code
+        //if (curveOn) {
+        //    float finalDeviationMagnitude;
+        //    if (percentBetweenWaypoints < 0.5f) {
+        //        finalDeviationMagnitude = Mathf.Sqrt(Mathf.Pow(radius, 2f) - Mathf.Pow(newPathVector.magnitude / 2f - (percentBetweenWaypoints * newPathVector.magnitude), 2f)) -
+        //        (radius - deviationHeight);
+        //    } else if (percentBetweenWaypoints > 0.5f && percentBetweenWaypoints < 1f) {
+        //        finalDeviationMagnitude = Mathf.Sqrt(Mathf.Pow(radius, 2) - Mathf.Pow(newPathVector.magnitude / 2f - ((1f - percentBetweenWaypoints) * newPathVector.magnitude), 2f)) -
+        //        (radius - deviationHeight);
+        //    } else if (percentBetweenWaypoints == 0.5f) {
+        //        finalDeviationMagnitude = deviationHeight;
+        //    } else {
+        //        finalDeviationMagnitude = 0;
+        //    }
+        //    if (float.IsNaN(finalDeviationMagnitude)) {
+        //        finalDeviationMagnitude = 0;
+        //    }
 
-            Vector3 scaledDeviationVector = finalDeviationMagnitude * deviationVector.normalized;
 
-            newPosFinal = newPos + scaledDeviationVector;
-        }
+        //    //  ISNT WORKING, KILLING THIS FOR NOW BUT LEAVING THE CODE\
+        //    finalDeviationMagnitude = 0;
+        //    // THIS KILLS IT
+
+
+
+        //    Vector3 scaledDeviationVector = finalDeviationMagnitude * deviationVector.normalized;
+
+        //    newPosFinal = newPos + scaledDeviationVector;
+        //}
+        #endregion
 
         return newPosFinal - transform.position;
     }
@@ -240,5 +254,9 @@ public class TwoBirds : MonoBehaviour {
                 Gizmos.DrawLine(globalWaypointPos - Vector3.left * size, globalWaypointPos + Vector3.left * size);
             }
         }
+    }
+
+    public void TurnOnInSwitchPosition () {
+        inSwitchPosition = true;
     }
 }

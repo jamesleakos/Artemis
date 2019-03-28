@@ -657,6 +657,8 @@ public class Spiderwalker : MonoBehaviour {
 		audioManager.PlaySound ("SpiderFire");
 	}
     public void PlayFootstepSound() {
-        footstepSound.Play();
+        if ((playerTransform.position - transform.position).magnitude < footstepSound.maxDistance + 5f) {
+            footstepSound.Play();
+        }
     }
 }

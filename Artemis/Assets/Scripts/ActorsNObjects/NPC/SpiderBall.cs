@@ -92,9 +92,11 @@ public class SpiderBall : MonoBehaviour
         percentBetweenWaypoints = Mathf.Clamp01(percentBetweenWaypoints);
         float easedPercentBetweenWaypoints = Ease(percentBetweenWaypoints);
 
-        float newPos = Mathf.Lerp(oldSize, targetSize, easedPercentBetweenWaypoints);
-
-        Vector3 newsize = new Vector3(newPos, newPos, 1);
+        float newFloat = Mathf.Lerp(oldSize, targetSize, easedPercentBetweenWaypoints);
+        if (float.IsNaN(newFloat)) {
+            newFloat = 0f;
+        }
+        Vector3 newsize = new Vector3(newFloat, newFloat, 1);
         gameObject.transform.localScale = newsize;
     }
     #endregion
