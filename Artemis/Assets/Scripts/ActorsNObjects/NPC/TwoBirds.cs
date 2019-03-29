@@ -60,7 +60,11 @@ public class TwoBirds : MonoBehaviour {
     public float followPlayerDistance;
 
     bool inSwitchPosition = false;
+    Transform bird1;
 
+    Vector3 targetPosition;
+    public float smoothTime = 0.01F;
+    private Vector3 smoothVelocity = Vector3.zero;
     #endregion
 
     #region Player Target 
@@ -74,8 +78,9 @@ public class TwoBirds : MonoBehaviour {
     Transform RotationObject;
 
     void Start() {
+        bird1 = TransformDeepChildExtension.FindDeepChild(gameObject.transform, "bird1");
         RotationObject = TransformDeepChildExtension.FindDeepChild(gameObject.transform, "RotationObject");
-        animator = RotationObject.GetComponent<Animator>();
+        animator = GetComponent<Animator>();
 
         globalWaypoints = new Vector3[localWaypoints.Length];
         for (int i = 0; i < localWaypoints.Length; i++) {
@@ -96,7 +101,7 @@ public class TwoBirds : MonoBehaviour {
         } else if (movementState == MovementState.flying) {
             if (player != null) {
                 // if (Time.time > endFollowPlayerCooldown) {
-                if (playerFollower && (Mathf.Abs((player.transform.position - transform.position).magnitude) < followPlayerDistance)) {
+                if (playerFollower && (Mathf.Abs((player.transform.position - bird1.position).magnitude) < followPlayerDistance)) {
                     movementState = MovementState.followingPlayer;
                     //endFollowPlayer = Time.time + followPlayerLength;
                 }
@@ -111,7 +116,8 @@ public class TwoBirds : MonoBehaviour {
 
         } else if (movementState == MovementState.followingPlayer) {
             if (player != null) {
-                transform.position = player.transform.position;
+                transform.position = Vector3.SmoothDamp(transform.position, playerTransform.position, ref smoothVelocity, smoothTime, speed);
+
             } else {
                 //movementState = MovementState.flying;
             }
@@ -246,7 +252,7 @@ public class TwoBirds : MonoBehaviour {
     void OnDrawGizmos() {
         if (localWaypoints != null) {
             Gizmos.color = Color.red;
-            float size = .3f;
+            float size = 2f;
 
             for (int i = 0; i < localWaypoints.Length; i++) {
                 Vector3 globalWaypointPos = (Application.isPlaying) ? globalWaypoints[i] : localWaypoints[i] + transform.position;
