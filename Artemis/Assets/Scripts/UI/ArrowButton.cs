@@ -24,8 +24,10 @@ public class ArrowButton : MonoBehaviour {
 
     MenuSystem menuSystem;
     AudioManager audioManager;
+    public GameMaster gm;
 
     void Start() {
+        gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
         animator = gameObject.GetComponent<Animator>();
         menuSystem = GameObject.FindGameObjectWithTag("MenuSystem").GetComponent<MenuSystem>();
         audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
@@ -96,5 +98,15 @@ public class ArrowButton : MonoBehaviour {
             audioManager.PlaySound("MenuClick");
         }
     }
+
+    public void FinishArchNextLevelClick() {
+        gm.NextLevel();
+    }
+
+
+    public void FinishArchReplayLevelClick() {
+        gm.ReplayLevel();
+    }
+
 
 }

@@ -100,6 +100,9 @@ public class GameMaster : MonoBehaviour {
     }
 
     //Convenience Roll-Ups
+    public void ReplayLevel() {
+        gm.SetLoadLevel(SceneManager.GetActiveScene().buildIndex);
+    }
     public void NextLevel() {
         if (SceneManager.sceneCountInBuildSettings == SceneManager.GetActiveScene().buildIndex + 1) {
             gm.SetLoadLevel(0);

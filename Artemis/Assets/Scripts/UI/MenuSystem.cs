@@ -357,9 +357,12 @@ public class MenuSystem : MonoBehaviour {
     #endregion
 
     #region Loading Levels - refs to GM
+    // For use by buttons
     public void setLevelToLoad(int levelInt) {
         gm.SetLoadLevel(levelInt);
     }
+
+    // ONLY FOR USE BY MASK - OTHER CODE GOES THROUGH GM
     public void LoadOrRespawn() {
         gm.LoadOrRespawn();
     }
