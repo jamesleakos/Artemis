@@ -19,7 +19,7 @@ public class DistanceFog : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        float percentCamZoom = (cam.orthographicSize - camZoom.startingCamSize) / (camZoom.zoomOutSize - camZoom.startingCamSize);
+        float percentCamZoom = (cam.orthographicSize - camZoom.currentSetCamSize) / (camZoom.zoomOutSize - camZoom.currentSetCamSize);
         var tempColor = fogImage.color;
         tempColor.a = percentCamZoom * maxFogAlpha/255;
         fogImage.color = tempColor;

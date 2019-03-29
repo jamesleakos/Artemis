@@ -19,6 +19,8 @@ public class Sawwheel : MonoBehaviour {
     #endregion
 
     public float defaultVolume;
+    float nextTimeToCheckVolume;
+    float volumeCheckInterval = 1f;
 
     void Start() {
         gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
@@ -28,12 +30,17 @@ public class Sawwheel : MonoBehaviour {
     }
 
     void Update() {
+        if (nextTimeToCheckVolume < Time.time && buzzsound.isPlaying) {
+            buzzsound.volume = defaultVolume * PlayerPrefs.GetFloat("MainVolume") * PlayerPrefs.GetFloat("SFXVolume");
+            nextTimeToCheckVolume = Time.time + volumeCheckInterval + Random.Range(0, 0.3f);
+        }
         if (playerTransform == null) {
             FindPlayer();
         }
         if (playerTransform != null) {
             if ((playerTransform.position - transform.position).magnitude < buzzsound.maxDistance + bufferDistance) {
                 if (!buzzsound.isPlaying) {
+                    buzzsound.volume = defaultVolume * PlayerPrefs.GetFloat("MainVolume") * PlayerPrefs.GetFloat("SFXVolume");
                     buzzsound.Play();
                 }
             } else {
@@ -75,12 +82,11 @@ public class Sawwheel : MonoBehaviour {
     //    AudioManager.OnSFXSet -= SetVolume;
     //}
 
-    //void SetVolume(float setVolume, float mainVolume) {
+    //void SetVolume(float setXMainVoume) {
     //    print(buzzsound.volume);
     //    print(defaultVolume);
-    //    print(setVolume);
-    //    print(mainVolume);
+    //    print(setXMainVoume);
 
-    //    buzzsound.volume = defaultVolume * setVolume * mainVolume;
+    //    buzzsound.volume = defaultVolume * setXMainVoume;
     //}
 }

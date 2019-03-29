@@ -11,12 +11,15 @@ public class Flutterbird : MonoBehaviour
     public float randomVolume = 0.3f;
     public float randomPitch = 0.3f;
 
+    float nextTimeToCheckVolume;
+    float volumeCheckInterval = 1f;
+
     #region Player Target 
     // get player target
     Transform playerTransform;
     Player player;
     float nextTimeToSearch;
-    float searchInterval = 0.5f;
+    float searchInterval = 1.2f;
     #endregion
 
     void Start()
@@ -26,6 +29,10 @@ public class Flutterbird : MonoBehaviour
     }
 
     void Update() {
+        if (nextTimeToCheckVolume < Time.time && chirping.isPlaying) {
+            chirping.volume = defaultVolume * PlayerPrefs.GetFloat("MainVolume") * PlayerPrefs.GetFloat("SFXVolume");
+            nextTimeToCheckVolume = Time.time + volumeCheckInterval + Random.Range(0,0.3f);
+        }
         if (playerTransform == null) {
             FindPlayer();
         }
@@ -54,4 +61,19 @@ public class Flutterbird : MonoBehaviour
             nextTimeToSearch = Time.time + searchInterval;
         }
     }
+
+    //void OnEnable() {
+    //    AudioManager.OnSFXSet += SetVolume;
+    //}
+    //void OnDisable() {
+    //    AudioManager.OnSFXSet -= SetVolume;
+    //}
+
+    //void SetVolume(float setXMainVoume) {
+    //    print(chirping.volume);
+    //    print(defaultVolume);
+    //    print(setXMainVoume);
+
+    //    chirping.volume = defaultVolume * setXMainVoume;
+    //}
 }

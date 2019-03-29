@@ -7,8 +7,6 @@ using UnityEngine.SceneManagement;
 public class GameMaster : MonoBehaviour {
 
 	public static GameMaster gm;
-
-    // Variables that the user does not need to change
     private MenuSystem menuSystem;
     public GameObject mask;
 
@@ -20,6 +18,10 @@ public class GameMaster : MonoBehaviour {
     public KeyCode jump { get; set; }
     public KeyCode pause { get; set; }
     public KeyCode fireDash { get; set; }
+    #endregion
+
+    #region Loading Levels
+    int levelToLoad;
     #endregion
 
     #region Spawns
@@ -38,7 +40,8 @@ public class GameMaster : MonoBehaviour {
 
     // public CameraShake cameraShake;
 
-    void Start () {
+    #region Start, Update, OnSceneLoaded, OnEnable, OnDisable
+    void Start() {
         Application.targetFrameRate = 60;
 
         if (gm != null) {
@@ -72,10 +75,43 @@ public class GameMaster : MonoBehaviour {
         menuSystem = GameObject.FindGameObjectWithTag("MenuSystem").GetComponent<MenuSystem>();
         spawnReached = false;
     }
+    #endregion
 
-    #region Respawn Player
+    #region Loading Levels and Respawn Player
 
-    public void StartRespawnPlayer () {
+    public void LoadOrRespawn() {
+        if (gm.respawnState == GameMaster.RespawnState.respawn) {
+            gm.RespawnPlayer();
+            menuSystem.fadeMaskController.LightenMask();
+        } else if (gm.respawnState == GameMaster.RespawnState.reset) {
+            loadLevel();
+        }
+    }
+
+    #region Loading Levels
+    //Main
+    public void SetLoadLevel(int levelInt) {
+        levelToLoad = levelInt;
+        menuSystem.fadeInEffect();
+        respawnState = RespawnState.reset;
+    }
+    public void loadLevel() {
+        SceneManager.LoadScene(levelToLoad);
+    }
+
+    //Convenience Roll-Ups
+    public void NextLevel() {
+        if (SceneManager.sceneCountInBuildSettings == SceneManager.GetActiveScene().buildIndex + 1) {
+            gm.SetLoadLevel(0);
+        } else {
+            gm.SetLoadLevel(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+    }
+    #endregion
+
+    #region Respawns
+    //Main
+    public void SetRespawnPlayer() {
         menuSystem.fadeInEffect();
         respawnState = RespawnState.respawn;
     }
@@ -86,32 +122,27 @@ public class GameMaster : MonoBehaviour {
         }
     }
 
+    //Updating Spawns
     public void UpdateSpawn(Vector3 newSpawn) {
         spawnReached = true;
         spawnPoint = newSpawn;
     }
-
     public void ResetSpawn() {
         spawnReached = false;
     }
+    #endregion
 
     #endregion
 
-    public void KillPlayer (Player player) {
-		Destroy (player.gameObject);
-		if (spawnReached) {
-            StartRespawnPlayer();
-		} else {
-			gm.loadLevelGame(SceneManager.GetActiveScene().buildIndex);
-		}
-	}
+    #region Killing Things
 
-    public void NextLevel() {
-		if (SceneManager.sceneCountInBuildSettings == SceneManager.GetActiveScene ().buildIndex + 1) {
-			gm.loadLevelGame (0);
-		} else {
-			gm.loadLevelGame(SceneManager.GetActiveScene().buildIndex + 1);
-		}
+    public void KillPlayer(Player player) {
+        Destroy(player.gameObject);
+        if (spawnReached) {
+            SetRespawnPlayer();
+        } else {
+            gm.SetLoadLevel(SceneManager.GetActiveScene().buildIndex);
+        }
     }
 
     public static void KillEnemy(GameObject enemy) {
@@ -137,15 +168,10 @@ public class GameMaster : MonoBehaviour {
             Destroy(character);
         } else if (character.tag == "ChargerEnemy" || character.tag == "RangedEnemy") {
             Destroy(character);
-        }        
+        }
     }
 
-    // Loads game level
-	public void loadLevelGame(int levelInt) {
-		menuSystem.setLevelToLoad(levelInt);
-        menuSystem.fadeInEffect();
-        respawnState = RespawnState.reset;
-    }
+    #endregion
 
     public void QuitGame() {
         print("this will quit");

@@ -46,7 +46,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.1792453, g: 0.1767088, b: 0.1767088, a: 0}
+  m_BackGroundColor: {r: 0.16911763, g: 0.16911763, b: 0.16911763, a: 0}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
@@ -153,7 +153,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 244c2d31ad4773045a3add3361653d4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingCamSize: 30
+  defaultCamSize: 30
+  currentSetCamSize: 30
   zoomOutSize: 100
   easeAmount: 0.5
-  zoomSpeed: 100
+  zoomSpeed: 200

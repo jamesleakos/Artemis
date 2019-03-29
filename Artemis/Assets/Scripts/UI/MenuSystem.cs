@@ -20,6 +20,7 @@ public class MenuSystem : MonoBehaviour {
     public GameObject settingsScreen;
     public Transform buttonConfig;
     public Transform volumeConfig;
+    public Transform otherSettingsConfig;
     public GameObject timer;
 
     #endregion
@@ -54,7 +55,7 @@ public class MenuSystem : MonoBehaviour {
     public GameMaster gm;
 
     // Start and Update
-    #region Start and Update
+    #region Start and Update, On Enable/Diable, On Screen Loaded, etc.
 
     void Start() {
 
@@ -113,6 +114,15 @@ public class MenuSystem : MonoBehaviour {
 
         }
         #endregion
+
+        #region Other Settings
+        for (int i = 0; i < otherSettingsConfig.childCount; i++) {
+
+            if (otherSettingsConfig.GetChild(i).name == "CameraZoomScale") {
+                otherSettingsConfig.GetChild(i).Find("Slider").GetComponentInChildren<Slider>().value = PlayerPrefs.GetFloat("CameraZoomScale",1f);
+            }
+        }
+        #endregion
     }
 
     private void OnGUI() {
@@ -145,9 +155,24 @@ public class MenuSystem : MonoBehaviour {
         openPauseMenu();
         quitSettingsScreen();
     }
+    void OnEnable() {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable() {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+        if (SceneManager.GetActiveScene().buildIndex == 0) {
+            currentMenuScreen = CurrentMenuScreen.main;
+        } else {
+            currentMenuScreen = CurrentMenuScreen.none;
+        }
+    }
     #endregion
 
-    #region Key Binding
+    #region Settings Changes
 
     public void KeyBindingOn(string keyString) {
 
@@ -234,6 +259,10 @@ public class MenuSystem : MonoBehaviour {
 
     public void SetSFX(float volumeScale) {
         audioManager.SetSFX(volumeScale);
+    }
+
+    public void SetCameraZoomPref(float CameraZoomScale) {
+        camZoom.SetNewZoomSize(CameraZoomScale);
     }
 
     #endregion
@@ -327,38 +356,12 @@ public class MenuSystem : MonoBehaviour {
     }
     #endregion
 
-    #region Loading Levels - should mayube move some of this to GM
-    // Loads game level
+    #region Loading Levels - refs to GM
     public void setLevelToLoad(int levelInt) {
-        levelToLoad = levelInt;
-        fadeInEffect();
+        gm.SetLoadLevel(levelInt);
     }
     public void LoadOrRespawn() {
-        if (gm.respawnState == GameMaster.RespawnState.respawn) {
-            //camera.position = gm.spawnPoint;
-            gm.RespawnPlayer();
-            fadeMaskController.LightenMask();
-        } else if (gm.respawnState == GameMaster.RespawnState.reset) {
-            loadLevel();
-        }
-    }
-    public void loadLevel() {
-        SceneManager.LoadScene(levelToLoad);
-    }
-    void OnEnable() {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    void OnDisable() {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-        if (SceneManager.GetActiveScene().buildIndex == 0) {
-            currentMenuScreen = CurrentMenuScreen.main;
-        } else {
-            currentMenuScreen = CurrentMenuScreen.none;
-        }
+        gm.LoadOrRespawn();
     }
     #endregion
 

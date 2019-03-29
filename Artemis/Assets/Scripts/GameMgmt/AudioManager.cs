@@ -10,7 +10,7 @@ public class Sound
     [Range(0f, 1f)]
     public float defaultVolume = 0.7f;
     [Range(0f, 1f)]
-	public float volume = 0.7f;
+	public float currentSetVolume = 0.7f;
 	[Range(0.5f, 1.5f)]
 	public float pitch = 1f;
 
@@ -34,7 +34,7 @@ public class Sound
 
 	public void Play()
 	{
-        source.volume = volume * (1 + Random.Range(-randomVolume / 2f, randomVolume / 2f));
+        source.volume = currentSetVolume * (1 + Random.Range(-randomVolume / 2f, randomVolume / 2f));
         source.pitch = pitch * (1 + Random.Range(-randomPitch / 2f, randomPitch / 2f));
 		source.Play();
 	}
@@ -45,7 +45,7 @@ public class Sound
 	}
 
     public void ChangeVolume() {
-        source.volume = volume * (1 + Random.Range(-randomVolume / 2f, randomVolume / 2f));
+        source.volume = currentSetVolume * (1 + Random.Range(-randomVolume / 2f, randomVolume / 2f));
     }
 
 }
@@ -63,7 +63,7 @@ public class AudioManager : MonoBehaviour
 	[SerializeField]
 	Sound[] sounds;
 
-    //public delegate void SFXSet(float setVolume, float mainVolume);
+    //public delegate void SFXSet(float setXMainVolume);
     //public static event SFXSet OnSFXSet;
 
 	void Awake()
@@ -149,11 +149,12 @@ public class AudioManager : MonoBehaviour
 
     public void SetSFX(float setVolume) {
         PlayerPrefs.SetFloat("SFXVolume", setVolume);
-        //OnSFXSet(setVolume, mainVolume);
+        //OnSFXSet(setVolume * mainVolume);
 
         for (int i = 0; i < sounds.Length; i++) {
             if (sounds[i].soundType == Sound.SoundType.sfx) {
-                sounds[i].volume = sounds[i].defaultVolume * setVolume * mainVolume;
+                sounds[i].currentSetVolume = sounds[i].defaultVolume * setVolume * mainVolume;
+                sounds[i].ChangeVolume();
             }
         }
     }
@@ -163,7 +164,8 @@ public class AudioManager : MonoBehaviour
 
         for (int i = 0; i < sounds.Length; i++) {
             if (sounds[i].soundType == Sound.SoundType.music) {
-                sounds[i].volume = sounds[i].defaultVolume * setVolume * mainVolume;
+                sounds[i].currentSetVolume = sounds[i].defaultVolume * setVolume * mainVolume;
+                sounds[i].ChangeVolume();
             }
         }
     }

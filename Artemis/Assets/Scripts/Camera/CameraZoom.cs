@@ -11,7 +11,8 @@ public class CameraZoom : MonoBehaviour {
     float targetCamSize;
     float oldCamSize;
 
-    public float startingCamSize;
+    public float defaultCamSize;
+    public float currentSetCamSize;
     public float zoomOutSize;
 
     public float easeAmount;
@@ -23,8 +24,8 @@ public class CameraZoom : MonoBehaviour {
     void Start() {
         gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
         cam = gameObject.GetComponent<Camera>();
-        startingCamSize = cam.orthographicSize;
-        targetCamSize = startingCamSize;
+        currentSetCamSize = defaultCamSize / PlayerPrefs.GetFloat("CameraZoomScale", 1f);
+        targetCamSize = currentSetCamSize;
 
         if (SceneManager.GetActiveScene().buildIndex == 0) {
             if (gm.loadSplashScreen) {
@@ -70,6 +71,11 @@ public class CameraZoom : MonoBehaviour {
     }
 
     public void ResetZoom (string calledFrom) {
-        ZoomCamera(startingCamSize);
+        ZoomCamera(currentSetCamSize);
+    }
+
+    public void SetNewZoomSize(float CameraZoomScale) {
+        PlayerPrefs.SetFloat("CameraZoomScale", CameraZoomScale);
+        currentSetCamSize = defaultCamSize / CameraZoomScale;
     }
 }
