@@ -28,6 +28,6 @@ public class MaskController : MonoBehaviour {
     }
 
 	public void loadLevel() {
-		menuSystem.LoadOrRespawn ();
+		menuSystem.LoadOrRespawn();
 	}
 }

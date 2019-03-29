@@ -56,20 +56,20 @@ public class ArrowButton : MonoBehaviour {
     }
 
     void PlayMouseOut() {
-        if (animator.enabled) {
+        if (gameObject.activeSelf == true) {
             animator.Play(mouseOut);
         }
         animationState = AnimationState.mouseOut;
     }
 
     void PlayMouseIn() {
-        if (animator.enabled) {
+        if (gameObject.activeSelf == true) {
             animator.Play(mouseIn);
         }
         animationState = AnimationState.mouseIn;
     }
 
-    public void menuDisable() {
+    public void MenuDisable() {
         if (gameObject.activeSelf == true) {
             PlayMouseOut();
             myText.fontSize = minFont;
@@ -77,17 +77,23 @@ public class ArrowButton : MonoBehaviour {
                 player.inputOnButtonPress = true;
             }
         }
-    }// END
+    }
 
-    // Method by setting the active menuItem (mouseEnter)
-    public void menuEnable() {
+    public void MenuEnable() {
         if (gameObject.activeSelf == true) {
             PlayMouseIn();
-            //audioManager.PlaySound("MenuClick");
+            audioManager.PlaySound("MenuHover");
             myText.fontSize = maxFont;
             if (player != null) {
                 player.inputOnButtonPress = false;
             }
+        }
+    }
+
+    public void MenuClick() {
+        if (gameObject.activeSelf == true) {
+            MenuDisable();
+            audioManager.PlaySound("MenuClick");
         }
     }
 

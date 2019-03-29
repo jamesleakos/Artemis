@@ -330,8 +330,8 @@ public class MenuSystem : MonoBehaviour {
     #region Loading Levels - should mayube move some of this to GM
     // Loads game level
     public void setLevelToLoad(int levelInt) {
-        fadeInEffect();
         levelToLoad = levelInt;
+        fadeInEffect();
     }
     public void LoadOrRespawn() {
         if (gm.respawnState == GameMaster.RespawnState.respawn) {
