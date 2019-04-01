@@ -20,6 +20,7 @@ public class ArrowButton : MonoBehaviour {
 
     float nextTimeToSearch;
     Text myText;
+    GameObject ArrowGraphic;
     Player player;
 
     MenuSystem menuSystem;
