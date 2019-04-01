@@ -41,6 +41,8 @@ public class TwoBirds : MonoBehaviour {
     #region Animation
     Animator animator;
 
+    public float randomFlyingSpeedMult;
+
     const string circling = "circling";
     const string flying = "flying";
 
@@ -80,7 +82,10 @@ public class TwoBirds : MonoBehaviour {
     void Start() {
         bird1 = TransformDeepChildExtension.FindDeepChild(gameObject.transform, "bird1");
         RotationObject = TransformDeepChildExtension.FindDeepChild(gameObject.transform, "RotationObject");
+
         animator = GetComponent<Animator>();
+        animator.speed = 1 + Random.Range(-randomFlyingSpeedMult / 2f, randomFlyingSpeedMult / 2f);
+        speed = speed * (1 + Random.Range(-randomFlyingSpeedMult / 2f, randomFlyingSpeedMult / 2f));
 
         globalWaypoints = new Vector3[localWaypoints.Length];
         for (int i = 0; i < localWaypoints.Length; i++) {
@@ -103,6 +108,7 @@ public class TwoBirds : MonoBehaviour {
                 // if (Time.time > endFollowPlayerCooldown) {
                 if (playerFollower && (Mathf.Abs((player.transform.position - bird1.position).magnitude) < followPlayerDistance)) {
                     movementState = MovementState.followingPlayer;
+                    animator.speed = 1f;
                     //endFollowPlayer = Time.time + followPlayerLength;
                 }
             }
@@ -111,7 +117,6 @@ public class TwoBirds : MonoBehaviour {
             transform.Translate(velocity);
 
             Quaternion tempRotation = Quaternion.Euler(0, 0, Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg);
-            //tempRotation *= Quaternion.Euler(0, 0, -90); // this adds a 90 degrees Y rotation
             RotationObject.rotation = tempRotation;
 
         } else if (movementState == MovementState.followingPlayer) {

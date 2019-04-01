@@ -22,6 +22,7 @@ public class MenuSystem : MonoBehaviour {
     public Transform volumeConfig;
     public Transform otherSettingsConfig;
     public GameObject timer;
+    public GameObject bestTime;
 
     #endregion
 

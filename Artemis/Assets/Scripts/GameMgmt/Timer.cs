@@ -6,8 +6,10 @@ using UnityEngine.UI;
 public class Timer : MonoBehaviour
 {
     Text timerText;
-    float runningTime;
+    public float runningTime;
 
+    enum TimerState { isRunning, beforeStart, finished }
+    TimerState timerState;
     bool isRunning = false;
 
     // Start is called before the first frame update
@@ -15,22 +17,28 @@ public class Timer : MonoBehaviour
     {
         runningTime = 0;
         timerText = gameObject.GetComponent<Text>();
+        timerState = TimerState.beforeStart;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (isRunning) {
+        if (timerState == TimerState.isRunning) {
             runningTime += Time.deltaTime;
+            timerText.text = runningTime.ToString("0.#");
+        } else if (timerState == TimerState.beforeStart) {
+            runningTime = 0;
+            timerText.text = "";
         }
-        timerText.text = runningTime.ToString();
+        
     }
 
     public void StartTimer() {
-        isRunning = true;
+        timerState = TimerState.isRunning;
     }
 
     public void EndTimer() {
-        isRunning = false;
+        timerState = TimerState.finished;
+
     }
 }
