@@ -292,7 +292,7 @@ public class MenuSystem : MonoBehaviour {
             if (targetPlayer != null) {
                 targetPlayer.inputOnUIScreen = true;
             }
-            camZoom.ResetZoom("State Functions - none");
+            camZoom.ZoomCameraOut();
 
         } else if (currentMenuScreen == CurrentMenuScreen.pause) {
             if (targetPlayer != null) {
