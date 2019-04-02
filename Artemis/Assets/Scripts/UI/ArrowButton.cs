@@ -20,9 +20,7 @@ public class ArrowButton : MonoBehaviour {
 
     float nextTimeToSearch;
     Text myText;
-    //GameObject ArrowGraphic;
-    //Vector3 startingArrowSize;
-    //Vector3 bigArrowSize;
+    GameObject ArrowGraphic;
     Player player;
 
     MenuSystem menuSystem;
@@ -35,9 +33,6 @@ public class ArrowButton : MonoBehaviour {
         menuSystem = GameObject.FindGameObjectWithTag("MenuSystem").GetComponent<MenuSystem>();
         audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
         myText = gameObject.GetComponentInChildren<Text>();
-        //ArrowGraphic = TransformDeepChildExtension.FindDeepChild(gameObject.transform, "Mask").gameObject;
-        //startingArrowSize = ArrowGraphic.transform.localScale;
-        //bigArrowSize = startingArrowSize * (maxFont / minFont);
         if (player == null) {
             FindPlayer();
         }
@@ -81,7 +76,6 @@ public class ArrowButton : MonoBehaviour {
         if (gameObject.activeSelf == true) {
             PlayMouseOut();
             myText.fontSize = minFont;
-            //ArrowGraphic.transform.localScale = startingArrowSize;
             if (player != null) {
                 player.inputOnButtonPress = true;
             }
@@ -93,7 +87,6 @@ public class ArrowButton : MonoBehaviour {
             PlayMouseIn();
             audioManager.PlaySound("MenuHover");
             myText.fontSize = maxFont;
-            //ArrowGraphic.transform.localScale = bigArrowSize;
             if (player != null) {
                 player.inputOnButtonPress = false;
             }

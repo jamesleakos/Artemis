@@ -333,7 +333,7 @@ public class MenuSystem : MonoBehaviour {
             }
         } else {
             currentMenuScreen = CurrentMenuScreen.none;
-            timer.SetActive(true);
+
             fadeMask.SetActive(true);
             fadeMaskController.LightenMask();
         }
