@@ -319,13 +319,10 @@ public class MenuSystem : MonoBehaviour {
             }
             camZoom.ZoomCameraOut();
             WatchSplashScreen();
-        } //else if (currentMenuScreen == CurrentMenuScreen.introText) {
-        //    if (targetPlayer != null) {
-        //        targetPlayer.inputOnUIScreen = false;
-        //    }
-        //    camZoom.ResetZoom("State Functions - none");
-        //    WatchIntroTextScreen();
-        //}
+        } else if (currentMenuScreen == CurrentMenuScreen.introText) {
+            camZoom.ResetZoom("State Functions - none");
+            WatchIntroTextScreen();
+        }
     }
     #endregion
 
@@ -459,10 +456,9 @@ public class MenuSystem : MonoBehaviour {
 
     void WatchIntroTextScreen() {
         if (Input.anyKeyDown) {
-            if (currentMenuScreen == CurrentMenuScreen.introText) {
-                SetIntroTextScreen(false);
-                //targetPlayer.gameObject.SetActive(true);
-            }
+            SetIntroTextScreen(false);
+            gm.displayLevelOpenText = false;
+            gm.loadLevel();
         }
     }
     #endregion

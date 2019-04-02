@@ -76,6 +76,7 @@ public class GameMaster : MonoBehaviour {
 
         menuSystem = GameObject.FindGameObjectWithTag("MenuSystem").GetComponent<MenuSystem>();
         spawnReached = false;
+
     }
     #endregion
 
@@ -98,7 +99,11 @@ public class GameMaster : MonoBehaviour {
         respawnState = RespawnState.reset;
     }
     public void loadLevel() {
-        SceneManager.LoadScene(levelToLoad);
+        if (displayLevelOpenText) {
+            SceneManager.LoadScene(levelToLoad);
+        } else {
+            SceneManager.LoadScene(1);
+        }
     }
     public void SetDisplayLevelOpenText(bool setTo) {
         displayLevelOpenText = setTo;
