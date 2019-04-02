@@ -6,8 +6,15 @@ public class Spiderwalker : MonoBehaviour {
 
     #region Waypoints
     // Waypoints
-    public Node[] patrolNodes;
-    public int destPoint;
+    public bool patroller;
+    enum PatrolMovementState { min, max }
+    PatrolMovementState patrolMovementState;
+
+    public Vector3 localMinPatrolRange;
+    public Vector3 localMaxPatrolRange;
+    Vector3 globalMinPatrolRange;
+    Vector3 globalMaxPatrolRange;
+    Vector3 destPoint;
 
     public Vector3 localMinInvestigateRange;
     public Vector3 localMaxInvestigateRange;
@@ -173,8 +180,12 @@ public class Spiderwalker : MonoBehaviour {
 
         globalMaxInvestigateRange = localMaxInvestigateRange + transform.position;
         globalMinInvestigateRange = localMinInvestigateRange + transform.position;
+        globalMaxPatrolRange = localMaxPatrolRange + transform.position;
+        globalMinPatrolRange = localMinPatrolRange + transform.position;
 
         spiderWalkerState = SpiderWalkerState.patrolling;
+        destPoint = globalMaxPatrolRange;
+        patrolMovementState = PatrolMovementState.max;
         faceDirX = 1;
     }
 
@@ -252,16 +263,16 @@ public class Spiderwalker : MonoBehaviour {
         #endregion
 
         #region Movement
-        if (patrolNodes.Length == 0) {
+        if (!patroller) {
             velocity.x = 0;
             if (Time.time > timeToChangeFaceDir) {
                 faceDirX = faceDirX * -1;
                 timeToChangeFaceDir = Time.time + changeFaceDirLength;
             }
         } else {
-            velocity.x = Mathf.Sign(patrolNodes[destPoint].transform.position.x - gameObject.transform.position.x) * patrolSpeed;
+            velocity.x = Mathf.Sign(destPoint.x - gameObject.transform.position.x) * patrolSpeed;
 
-            if (Mathf.Abs(patrolNodes[destPoint].transform.position.x - gameObject.transform.position.x) < 1) {
+            if (Mathf.Abs(destPoint.x - gameObject.transform.position.x) < 1) {
                 UpdatePatrolNode();
             }
 
@@ -276,10 +287,16 @@ public class Spiderwalker : MonoBehaviour {
 
     }
     void UpdatePatrolNode() {
-        if (patrolNodes.Length == 0) {
+        if (!patroller) {
             return;
         }
-        destPoint = (destPoint + 1) % patrolNodes.Length;
+        if (patrolMovementState == PatrolMovementState.max) {
+            destPoint = globalMinPatrolRange;
+            patrolMovementState = PatrolMovementState.min;
+        } else if (patrolMovementState == PatrolMovementState.min) {
+            destPoint = globalMaxPatrolRange;
+            patrolMovementState = PatrolMovementState.max;
+        }
     }
     void AlertBehavior() {
         if (lastPlacePlayerSeen != null) {
@@ -619,15 +636,21 @@ public class Spiderwalker : MonoBehaviour {
     }
 
     void OnDrawGizmos() {
-        if (patrolNodes.Length > 0) {
-            Gizmos.color = Color.red;
-            float size = 1;
+        if (true) {
+            Gizmos.color = Color.blue;
+            float size = .3f;
 
-            for (int i = 0; i < patrolNodes.Length; i++) {
-                Vector3 globalWaypointPos = patrolNodes[i].transform.position;
-                Gizmos.DrawLine(globalWaypointPos - Vector3.up * size, globalWaypointPos + Vector3.up * size);
-                Gizmos.DrawLine(globalWaypointPos - Vector3.left * size, globalWaypointPos + Vector3.left * size);
-            }
+            Vector3 globalRangePos = (Application.isPlaying) ? globalMinPatrolRange : localMinPatrolRange + transform.position;
+            Gizmos.DrawLine(globalRangePos - Vector3.up * size, globalRangePos + Vector3.up * size);
+            Gizmos.DrawLine(globalRangePos - Vector3.left * size, globalRangePos + Vector3.left * size);
+        }
+        if (true) {
+            Gizmos.color = Color.blue;
+            float size = .3f;
+
+            Vector3 globalRangePos = (Application.isPlaying) ? globalMaxPatrolRange : localMaxPatrolRange + transform.position;
+            Gizmos.DrawLine(globalRangePos - Vector3.up * size, globalRangePos + Vector3.up * size);
+            Gizmos.DrawLine(globalRangePos - Vector3.left * size, globalRangePos + Vector3.left * size);
         }
         if (true) {
             Gizmos.color = Color.red;
