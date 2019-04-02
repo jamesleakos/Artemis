@@ -15,6 +15,7 @@ public class MenuSystem : MonoBehaviour {
     public GameObject distanceFog;
     public GameObject splashScreen;
     public GameObject mainScreen;
+    public GameObject IntroTextScreen;
     public GameObject pauseScreen;
     public GameObject levelSelection;
     public GameObject settingsScreen;
@@ -33,7 +34,7 @@ public class MenuSystem : MonoBehaviour {
 
     private int levelToLoad;
 
-    public enum CurrentMenuScreen { splash, main, pause, win, levelSelect, settings, none };
+    public enum CurrentMenuScreen { splash, main, pause, win, levelSelect, settings, introText, none };
     public CurrentMenuScreen currentMenuScreen;
 
     float nextTimeToSearch;
@@ -317,8 +318,14 @@ public class MenuSystem : MonoBehaviour {
                 targetPlayer.inputOnUIScreen = false;
             }
             camZoom.ZoomCameraOut();
-            watchSplashScreen();
-        }
+            WatchSplashScreen();
+        } //else if (currentMenuScreen == CurrentMenuScreen.introText) {
+        //    if (targetPlayer != null) {
+        //        targetPlayer.inputOnUIScreen = false;
+        //    }
+        //    camZoom.ResetZoom("State Functions - none");
+        //    WatchIntroTextScreen();
+        //}
     }
     #endregion
 
@@ -327,15 +334,18 @@ public class MenuSystem : MonoBehaviour {
         ResetMenus();
         if (SceneManager.GetActiveScene().buildIndex == 0) {
             if (gm.loadSplashScreen) {
+                FadeOutEffect();
                 setSplashScreen(true);
             } else {
+                FadeOutEffect();
                 setMainMenu(true);
             }
+        } else if (SceneManager.GetActiveScene().buildIndex == 1) {
+            currentMenuScreen = CurrentMenuScreen.introText;
+            TurnIntroTextOn();
         } else {
             currentMenuScreen = CurrentMenuScreen.none;
-
-            fadeMask.SetActive(true);
-            fadeMaskController.LightenMask();
+            FadeOutEffect();
         }
     }
 
@@ -350,10 +360,19 @@ public class MenuSystem : MonoBehaviour {
 
     #region Mask Work
     // Fade Effect
-    public void fadeInEffect() {
+    public void FadeInEffect() {
         fadeMask.SetActive(true);
         fadeMaskController.DarkenMask();
         // animator on fade mask takes over from here
+    }
+    public void FadeOutEffect() {
+        fadeMask.SetActive(true);
+        fadeMaskController.LightenMask();
+        // animator on fade mask takes over from here
+    }
+    public void TurnIntroTextOn() {
+        fadeMask.SetActive(true);
+        fadeMaskController.TurnIntroTextOn();
     }
     #endregion
 
@@ -416,11 +435,33 @@ public class MenuSystem : MonoBehaviour {
         }
     }
 
-    void watchSplashScreen() {
+    void WatchSplashScreen() {
         if (Input.anyKeyDown) {
             if (currentMenuScreen == CurrentMenuScreen.splash) {
                 setSplashScreen(false);
                 setMainMenu(true);
+            }
+        }
+    }
+    #endregion
+
+    #region IntroTextScreen
+    public void SetIntroTextScreen(bool value) {
+        if (value) {
+            currentMenuScreen = CurrentMenuScreen.introText;
+            IntroTextScreen.SetActive(true);
+        } else {
+            IntroTextScreen.SetActive(false);
+            currentMenuScreen = CurrentMenuScreen.none;
+            // gm.loadlevel(gm.nextleveltoloadint)
+        }
+    }
+
+    void WatchIntroTextScreen() {
+        if (Input.anyKeyDown) {
+            if (currentMenuScreen == CurrentMenuScreen.introText) {
+                SetIntroTextScreen(false);
+                //targetPlayer.gameObject.SetActive(true);
             }
         }
     }

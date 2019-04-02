@@ -22,6 +22,7 @@ public class GameMaster : MonoBehaviour {
 
     #region Loading Levels
     int levelToLoad;
+    public bool displayLevelOpenText;
     #endregion
 
     #region Spawns
@@ -43,6 +44,7 @@ public class GameMaster : MonoBehaviour {
     #region Start, Update, OnSceneLoaded, OnEnable, OnDisable
     void Start() {
         Application.targetFrameRate = 60;
+        displayLevelOpenText = true;
 
         if (gm != null) {
             if (gm != this) {
@@ -92,11 +94,14 @@ public class GameMaster : MonoBehaviour {
     //Main
     public void SetLoadLevel(int levelInt) {
         levelToLoad = levelInt;
-        menuSystem.fadeInEffect();
+        menuSystem.FadeInEffect();
         respawnState = RespawnState.reset;
     }
     public void loadLevel() {
         SceneManager.LoadScene(levelToLoad);
+    }
+    public void SetDisplayLevelOpenText(bool setTo) {
+        displayLevelOpenText = setTo;
     }
 
     //Convenience Roll-Ups
@@ -115,7 +120,7 @@ public class GameMaster : MonoBehaviour {
     #region Respawns
     //Main
     public void SetRespawnPlayer() {
-        menuSystem.fadeInEffect();
+        menuSystem.FadeInEffect();
         respawnState = RespawnState.respawn;
     }
     public void RespawnPlayer() {
@@ -141,6 +146,7 @@ public class GameMaster : MonoBehaviour {
 
     public void KillPlayer(Player player) {
         Destroy(player.gameObject);
+        displayLevelOpenText = false;
         if (spawnReached) {
             SetRespawnPlayer();
         } else {

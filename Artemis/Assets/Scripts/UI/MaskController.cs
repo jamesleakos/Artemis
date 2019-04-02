@@ -11,6 +11,9 @@ public class MaskController : MonoBehaviour {
 
     const string Darken = "Darken";
     const string Lighten = "Lighten";
+    const string onIdle = "onIdle";
+    const string turnTextOn = "turnTextOn";
+
 
     void Start() {
         anim = gameObject.GetComponent<Animator>();
@@ -27,7 +30,17 @@ public class MaskController : MonoBehaviour {
         anim.Play(Lighten);
     }
 
-	public void loadLevel() {
+    public void TurnIntroTextOn() {
+        anim = gameObject.GetComponent<Animator>();
+        anim.Play(turnTextOn);
+    }
+
+    public void TurnIntroTextOnIdle() {
+        anim = gameObject.GetComponent<Animator>();
+        anim.Play(onIdle);
+    }
+
+    public void loadLevel() {
 		menuSystem.LoadOrRespawn();
 	}
 }
