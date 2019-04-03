@@ -4,38 +4,37 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class MaskController : MonoBehaviour {
+public class IntroTextController : MonoBehaviour {
 
-	private MenuSystem menuSystem;
+    private MenuSystem menuSystem;
     Animator anim;
 
-    const string Darken = "Darken";
-    const string Lighten = "Lighten";
+    const string fadeIn = "fadeIn";
+    const string fadeOut = "fadeOut";
     const string onIdle = "onIdle";
-    const string turnTextOn = "turnTextOn";
 
 
     void Start() {
         anim = gameObject.GetComponent<Animator>();
-		menuSystem = transform.root.GetComponent<MenuSystem>();
-	}
-
-    public void DarkenMask() {
-        anim = gameObject.GetComponent<Animator>();
-        anim.Play(Darken);
+        menuSystem = transform.root.GetComponent<MenuSystem>();
     }
 
-    public void LightenMask() {
+    public void FadeIn() {
         anim = gameObject.GetComponent<Animator>();
-        anim.Play(Lighten);
+        anim.Play(fadeIn);
     }
 
-    public void TurnOnIdle() {
+    public void FadeOut() {
+        anim = gameObject.GetComponent<Animator>();
+        anim.Play(fadeOut);
+    }
+
+    public void PlayOnIdle() {
         anim = gameObject.GetComponent<Animator>();
         anim.Play(onIdle);
     }
 
-    public void loadLevel() {
-		menuSystem.LoadOrRespawn();
-	}
+    public void LoadLevel() {
+        menuSystem.LoadLevelforIntroText();
+    }
 }

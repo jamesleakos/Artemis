@@ -90,7 +90,7 @@ public class GameMaster : MonoBehaviour {
             gm.RespawnPlayer();
             menuSystem.fadeMaskController.LightenMask();
         } else if (gm.respawnState == GameMaster.RespawnState.reset) {
-            loadLevel();
+            LoadLevel();
         }
     }
 
@@ -101,7 +101,7 @@ public class GameMaster : MonoBehaviour {
         menuSystem.FadeInEffect();
         respawnState = RespawnState.reset;
     }
-    public void loadLevel() {
+    public void LoadLevel() {
         if (!displayLevelOpenText || levelToLoad == 0) {
             SceneManager.LoadScene(levelToLoad);
             displayLevelOpenText = true;

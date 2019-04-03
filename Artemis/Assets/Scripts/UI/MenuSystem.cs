@@ -25,6 +25,8 @@ public class MenuSystem : MonoBehaviour {
     public GameObject timer;
     public GameObject bestTime;
 
+    IntroTextController introTextController;
+
     #endregion
 
     #region Other Vars
@@ -66,6 +68,7 @@ public class MenuSystem : MonoBehaviour {
         audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
         gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
         fadeMaskController = fadeMask.GetComponent<MaskController>();
+        introTextController = IntroTextScreen.GetComponent<IntroTextController>();
 
         basicSettings();
         SetPlayerPrefs();
@@ -166,13 +169,7 @@ public class MenuSystem : MonoBehaviour {
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-        if (SceneManager.GetActiveScene().buildIndex == 0) {
-            currentMenuScreen = CurrentMenuScreen.main;
-        } else if (SceneManager.GetActiveScene().buildIndex == 1) {
-            currentMenuScreen = CurrentMenuScreen.introText;
-        } else {
-            currentMenuScreen = CurrentMenuScreen.none;
-        }
+        //basicSettings();
     }
     #endregion
 
@@ -341,7 +338,7 @@ public class MenuSystem : MonoBehaviour {
             }
         } else if (SceneManager.GetActiveScene().buildIndex == 1) {
             currentMenuScreen = CurrentMenuScreen.introText;
-            TurnIntroTextOn();
+            SetIntroTextScreen(true);
         } else {
             currentMenuScreen = CurrentMenuScreen.none;
             FadeOutEffect();
@@ -354,6 +351,7 @@ public class MenuSystem : MonoBehaviour {
         pauseScreen.SetActive(false);
         mainScreen.SetActive(false);
         settingsScreen.SetActive(false);
+        IntroTextScreen.SetActive(false);
     }
     #endregion
 
@@ -369,10 +367,7 @@ public class MenuSystem : MonoBehaviour {
         fadeMaskController.LightenMask();
         // animator on fade mask takes over from here
     }
-    public void TurnIntroTextOn() {
-        fadeMask.SetActive(true);
-        fadeMaskController.TurnIntroTextOn();
-    }
+    
     #endregion
 
     #region Loading Levels - refs to GM
@@ -448,21 +443,36 @@ public class MenuSystem : MonoBehaviour {
     public void SetIntroTextScreen(bool value) {
         if (value) {
             currentMenuScreen = CurrentMenuScreen.introText;
+
             IntroTextScreen.SetActive(true);
+            introTextController.FadeIn();
+
+            fadeMask.SetActive(true);
+            fadeMaskController.TurnOnIdle();
+            
         } else {
             IntroTextScreen.SetActive(false);
             currentMenuScreen = CurrentMenuScreen.none;
-            // gm.loadlevel(gm.nextleveltoloadint)
         }
     }
 
     void WatchIntroTextScreen() {
         if (Input.anyKeyDown) {
-            SetIntroTextScreen(false);
+            introTextController.FadeOut();
             gm.displayLevelOpenText = false;
-            gm.loadLevel();
         }
     }
+
+    public void TurnIntroTextOff() {
+        introTextController.FadeOut();
+    }
+
+    public void LoadLevelforIntroText() {
+        SetIntroTextScreen(false);
+        gm.LoadLevel();
+    }
+
+
     #endregion
 
     #region LevelSelection
