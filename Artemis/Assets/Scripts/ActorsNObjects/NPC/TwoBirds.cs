@@ -18,6 +18,10 @@ public class TwoBirds : MonoBehaviour {
     int fromWaypointIndex;
     float percentBetweenWaypoints;
     float nextMoveTime;
+
+    bool gettingBackOnTrack = false;
+    Vector3 gettingBackStartSpot;
+
     #endregion
 
     #region Curving Stuff
@@ -52,11 +56,11 @@ public class TwoBirds : MonoBehaviour {
     #endregion
 
     #region Following Player
-    //public float followPlayerLength;
-    //float endFollowPlayer;
+    public float followPlayerLength;
+    float endFollowPlayer;
 
-    //public float followPlayerCooldownLength;
-    //float endFollowPlayerCooldown;
+    public float followPlayerCooldownLength;
+    float endFollowPlayerCooldown;
 
     public bool playerFollower;
     public float followPlayerDistance;
@@ -105,11 +109,12 @@ public class TwoBirds : MonoBehaviour {
 
         } else if (movementState == MovementState.flying) {
             if (player != null) {
-                // if (Time.time > endFollowPlayerCooldown) {
-                if (playerFollower && (Mathf.Abs((player.transform.position - bird1.position).magnitude) < followPlayerDistance)) {
-                    movementState = MovementState.followingPlayer;
-                    animator.speed = 1f;
-                    //endFollowPlayer = Time.time + followPlayerLength;
+                if (Time.time > endFollowPlayerCooldown) {
+                    if (playerFollower && (Mathf.Abs((player.transform.position - bird1.position).magnitude) < followPlayerDistance)) {
+                        movementState = MovementState.followingPlayer;
+                        animator.speed = 1f;
+                        endFollowPlayer = Time.time + followPlayerLength;
+                    }
                 }
             }
 
@@ -124,16 +129,23 @@ public class TwoBirds : MonoBehaviour {
                 transform.position = Vector3.SmoothDamp(transform.position, playerTransform.position, ref smoothVelocity, smoothTime, speed);
 
             } else {
-                //movementState = MovementState.flying;
+                GetBackOnTrack();
             }
 
-            //if (Time.time > endFollowPlayer) {
-            //    movementState = MovementState.flying;
-            //    endFollowPlayerCooldown = Time.time + followPlayerCooldownLength;
-            //}
+            if (Time.time > endFollowPlayer) {
+                GetBackOnTrack();
+            }
         }
 
         DetermineAnim();
+    }
+
+    public void GetBackOnTrack() {
+        movementState = MovementState.flying;
+        endFollowPlayerCooldown = Time.time + followPlayerCooldownLength;
+        gettingBackOnTrack = true;
+        gettingBackStartSpot = transform.position;
+        percentBetweenWaypoints = 0;
     }
 
     float Ease(float x) {
@@ -175,16 +187,23 @@ public class TwoBirds : MonoBehaviour {
 
         fromWaypointIndex %= globalWaypoints.Length;
         int toWaypointIndex = (fromWaypointIndex + 1) % globalWaypoints.Length;
-        float distanceBetweenWaypoints = Vector3.Distance(globalWaypoints[fromWaypointIndex], globalWaypoints[toWaypointIndex]);
+        Vector3 fromPoint;
+        if (gettingBackOnTrack) {
+            fromPoint = gettingBackStartSpot;
+        } else {
+            fromPoint = globalWaypoints[fromWaypointIndex];
+        }
+        float distanceBetweenWaypoints = Vector3.Distance(fromPoint, globalWaypoints[toWaypointIndex]);
         percentBetweenWaypoints += Time.deltaTime * speed / distanceBetweenWaypoints;
         percentBetweenWaypoints = Mathf.Clamp01(percentBetweenWaypoints);
         float easedPercentBetweenWaypoints = Ease(percentBetweenWaypoints);
 
-        Vector3 newPos = Vector3.Lerp(globalWaypoints[fromWaypointIndex], globalWaypoints[toWaypointIndex], easedPercentBetweenWaypoints);
+        Vector3 newPos = Vector3.Lerp(fromPoint, globalWaypoints[toWaypointIndex], easedPercentBetweenWaypoints);
         
         if (percentBetweenWaypoints >= 1) {
             percentBetweenWaypoints = 0;
             fromWaypointIndex++;
+            gettingBackOnTrack = false;
 
             if (!cyclic) {
                 if (fromWaypointIndex >= globalWaypoints.Length - 1) {

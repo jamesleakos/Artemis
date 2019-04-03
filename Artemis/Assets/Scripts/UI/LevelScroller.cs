@@ -39,7 +39,10 @@ public class LevelScroller : MonoBehaviour {
     #region Start and Update
     void Start() {
         gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
-        levelToLoad = minLevel + gm.levelPaddingBesidesMain;
+        minLevel = minLevel + gm.levelPaddingBesidesMain;
+        maxLevel = maxLevel + gm.levelPaddingBesidesMain;
+        levelToLoad = minLevel;
+
         CheckSideButtons();
         startingPos = gameObject.transform.position;
         targetXPos = startingPos.x;

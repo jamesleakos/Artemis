@@ -373,6 +373,11 @@ public class MenuSystem : MonoBehaviour {
     #region Loading Levels - refs to GM
     // For use by buttons
     public void setLevelToLoad(int levelInt) {
+        levelSelection.SetActive(false);
+        pauseScreen.SetActive(false);
+        mainScreen.SetActive(false);
+        settingsScreen.SetActive(false);
+
         gm.SetLoadLevel(levelInt);
     }
 

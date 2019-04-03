@@ -12,7 +12,6 @@ public class MaskController : MonoBehaviour {
     const string Darken = "Darken";
     const string Lighten = "Lighten";
     const string onIdle = "onIdle";
-    const string turnTextOn = "turnTextOn";
 
 
     void Start() {
