@@ -24,7 +24,7 @@ public class GameMaster : MonoBehaviour {
 
     public int levelPaddingBesidesMain;
 
-    int levelToLoad;
+    public int levelToLoad;
     public bool displayLevelOpenText;
     #endregion
 
@@ -197,7 +197,6 @@ public class GameMaster : MonoBehaviour {
         Application.Quit();
     }
 
-
     #region Relevent Text
 
     public string ReturnSceneNames(int sceneNumber) {
@@ -231,6 +230,8 @@ public class GameMaster : MonoBehaviour {
             case 10: return "Chapter " + sceneNumber.ToString() + ":\n" + "Olympian Idyll";
             default: return "Need to Add more to Return Scene Names";
         }
-        #endregion
     }
+    #endregion
+
+
 }

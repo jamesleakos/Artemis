@@ -8,6 +8,8 @@ public class IntroTextController : MonoBehaviour {
 
     private MenuSystem menuSystem;
     Animator anim;
+    Text introText;
+    GameMaster gm;
 
     const string fadeIn = "fadeIn";
     const string fadeOut = "fadeOut";
@@ -17,6 +19,10 @@ public class IntroTextController : MonoBehaviour {
     void Start() {
         anim = gameObject.GetComponent<Animator>();
         menuSystem = transform.root.GetComponent<MenuSystem>();
+        gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
+
+        introText = gameObject.GetComponentInChildren<Text>();
+        introText.text = gm.ReturnSceneNames(gm.levelToLoad);
     }
 
     public void FadeIn() {
