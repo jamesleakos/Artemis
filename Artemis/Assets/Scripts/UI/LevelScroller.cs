@@ -7,6 +7,7 @@ public class LevelScroller : MonoBehaviour {
 
     #region UI elements
     // other UI elements
+    GameMaster gm;
     public MenuSystem menuSystem;
     public RectTransform scrollerBox;
     public RectTransform leftArrow;
@@ -37,7 +38,8 @@ public class LevelScroller : MonoBehaviour {
 
     #region Start and Update
     void Start() {
-        levelToLoad = minLevel;
+        gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
+        levelToLoad = minLevel + gm.levelPaddingBesidesMain;
         CheckSideButtons();
         startingPos = gameObject.transform.position;
         targetXPos = startingPos.x;

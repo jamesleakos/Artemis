@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class StartArch : MonoBehaviour {
 
@@ -15,11 +17,15 @@ public class StartArch : MonoBehaviour {
 
     GameMaster gm;
     MenuSystem menuSystem;
+    Text StartText;
+    
 
     void Start() {
         animator = gameObject.GetComponent<Animator>();
         gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
         menuSystem = GameObject.FindGameObjectWithTag("MenuSystem").GetComponent<MenuSystem>();
+        StartText = gameObject.GetComponentInChildren<Text>();
+        StartText.text = gm.ReturnSceneNames(SceneManager.GetActiveScene().buildIndex);
     }
 
     void OnTriggerExit2D(Collider2D collider) {

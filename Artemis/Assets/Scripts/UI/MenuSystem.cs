@@ -168,6 +168,8 @@ public class MenuSystem : MonoBehaviour {
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         if (SceneManager.GetActiveScene().buildIndex == 0) {
             currentMenuScreen = CurrentMenuScreen.main;
+        } else if (SceneManager.GetActiveScene().buildIndex == 1) {
+            currentMenuScreen = CurrentMenuScreen.introText;
         } else {
             currentMenuScreen = CurrentMenuScreen.none;
         }

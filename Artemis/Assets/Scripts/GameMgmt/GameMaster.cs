@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class GameMaster : MonoBehaviour {
 
-	public static GameMaster gm;
+    public static GameMaster gm;
     private MenuSystem menuSystem;
     public GameObject mask;
 
@@ -21,6 +21,9 @@ public class GameMaster : MonoBehaviour {
     #endregion
 
     #region Loading Levels
+
+    public int levelPaddingBesidesMain;
+
     int levelToLoad;
     public bool displayLevelOpenText;
     #endregion
@@ -99,8 +102,9 @@ public class GameMaster : MonoBehaviour {
         respawnState = RespawnState.reset;
     }
     public void loadLevel() {
-        if (displayLevelOpenText) {
+        if (!displayLevelOpenText || levelToLoad == 0) {
             SceneManager.LoadScene(levelToLoad);
+            displayLevelOpenText = true;
         } else {
             SceneManager.LoadScene(1);
         }
@@ -111,6 +115,7 @@ public class GameMaster : MonoBehaviour {
 
     //Convenience Roll-Ups
     public void ReplayLevel() {
+        displayLevelOpenText = false;
         gm.SetLoadLevel(SceneManager.GetActiveScene().buildIndex);
     }
     public void NextLevel() {
@@ -190,5 +195,42 @@ public class GameMaster : MonoBehaviour {
     public void QuitGame() {
         print("this will quit");
         Application.Quit();
+    }
+
+
+    #region Relevent Text
+
+    public string ReturnSceneNames(int sceneNumber) {
+        sceneNumber = sceneNumber - levelPaddingBesidesMain;
+        switch (sceneNumber) {
+            case 1: return "Chapter " + sceneNumber.ToString() + ":\n" + "A Stroll Through Olympia";
+            case 2: return "Chapter " + sceneNumber.ToString() + ":\n" + "Labyrinth";
+            case 3: return "Chapter " + sceneNumber.ToString() + ":\n" + "The Climb";
+            case 4: return "Chapter " + sceneNumber.ToString() + ":\n" + "Path to Oblivion";
+            case 5: return "Chapter " + sceneNumber.ToString() + ":\n" + "The Knot";
+            case 6: return "Chapter " + sceneNumber.ToString() + ":\n" + "A Circuitous Route";
+            case 7: return "Chapter " + sceneNumber.ToString() + ":\n" + "The Sisyphean Squeeze";
+            case 8: return "Chapter " + sceneNumber.ToString() + ":\n" + "The Underroad";
+            case 9: return "Chapter " + sceneNumber.ToString() + ":\n" + "The Descent";
+            case 10: return "Chapter " + sceneNumber.ToString() + ":\n" + "Olympian Idyll";
+            default: return "Need to Add more to Return Scene Names";
+        }
+    }
+    public string ReturnSceneIntroText(int sceneNumber) {
+        sceneNumber = sceneNumber - levelPaddingBesidesMain;
+        switch (sceneNumber) {
+            case 1: return "Chapter " + sceneNumber.ToString() + ":\n" + "A Stroll Through Olympia";
+            case 2: return "Chapter " + sceneNumber.ToString() + ":\n" + "Labyrinth";
+            case 3: return "Chapter " + sceneNumber.ToString() + ":\n" + "The Climb";
+            case 4: return "Chapter " + sceneNumber.ToString() + ":\n" + "Path to Oblivion";
+            case 5: return "Chapter " + sceneNumber.ToString() + ":\n" + "The Knot";
+            case 6: return "Chapter " + sceneNumber.ToString() + ":\n" + "A Circuitous Route";
+            case 7: return "Chapter " + sceneNumber.ToString() + ":\n" + "The Sisyphean Squeeze";
+            case 8: return "Chapter " + sceneNumber.ToString() + ":\n" + "The Underroad";
+            case 9: return "Chapter " + sceneNumber.ToString() + ":\n" + "The Descent";
+            case 10: return "Chapter " + sceneNumber.ToString() + ":\n" + "Olympian Idyll";
+            default: return "Need to Add more to Return Scene Names";
+        }
+        #endregion
     }
 }
