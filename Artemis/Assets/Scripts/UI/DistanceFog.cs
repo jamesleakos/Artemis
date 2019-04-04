@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class DistanceFog : MonoBehaviour {
 
@@ -9,6 +10,7 @@ public class DistanceFog : MonoBehaviour {
     private Camera cam;
     Image fogImage;
     public float maxFogAlpha = 255;
+    public float maxFogAlphaMainMenu = 150;
 
     // Use this for initialization
     void Start() {
@@ -22,6 +24,9 @@ public class DistanceFog : MonoBehaviour {
         float percentCamZoom = (cam.orthographicSize - camZoom.currentSetCamSize) / (camZoom.zoomOutSize - camZoom.currentSetCamSize);
         var tempColor = fogImage.color;
         tempColor.a = percentCamZoom * maxFogAlpha/255;
+        if (SceneManager.GetActiveScene().buildIndex == 0) {
+            tempColor.a = tempColor.a * maxFogAlphaMainMenu / 255;
+        }
         fogImage.color = tempColor;
 	}
 }

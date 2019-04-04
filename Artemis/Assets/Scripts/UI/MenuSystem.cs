@@ -19,6 +19,7 @@ public class MenuSystem : MonoBehaviour {
     public GameObject pauseScreen;
     public GameObject levelSelection;
     public GameObject settingsScreen;
+    public GameObject creditsScreen;
     public Transform buttonConfig;
     public Transform volumeConfig;
     public Transform otherSettingsConfig;
@@ -26,6 +27,7 @@ public class MenuSystem : MonoBehaviour {
     public GameObject bestTime;
 
     IntroTextController introTextController;
+    LevelSelectionController levelSelectionController;
 
     #endregion
 
@@ -36,7 +38,7 @@ public class MenuSystem : MonoBehaviour {
 
     private int levelToLoad;
 
-    public enum CurrentMenuScreen { splash, main, pause, win, levelSelect, settings, introText, none };
+    public enum CurrentMenuScreen { splash, main, pause, win, levelSelect, settings, introText, credits, none };
     public CurrentMenuScreen currentMenuScreen;
 
     float nextTimeToSearch;
@@ -69,6 +71,7 @@ public class MenuSystem : MonoBehaviour {
         gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
         fadeMaskController = fadeMask.GetComponent<MaskController>();
         introTextController = IntroTextScreen.GetComponent<IntroTextController>();
+        levelSelectionController = levelSelection.GetComponent<LevelSelectionController>();
 
         basicSettings();
         SetPlayerPrefs();
@@ -157,6 +160,7 @@ public class MenuSystem : MonoBehaviour {
         StateFunctions();
 
         quitLevelSelectionScreen();
+        quitCreditsScreen();
         openPauseMenu();
         quitSettingsScreen();
     }
@@ -312,6 +316,11 @@ public class MenuSystem : MonoBehaviour {
             }
             camZoom.ZoomCameraOut();
             SetPlayerPrefs();
+        } else if (currentMenuScreen == CurrentMenuScreen.credits) {
+            if (targetPlayer != null) {
+                targetPlayer.inputOnUIScreen = false;
+            }
+            camZoom.ZoomCameraOut();
         } else if (currentMenuScreen == CurrentMenuScreen.splash) {
             if (targetPlayer != null) {
                 targetPlayer.inputOnUIScreen = false;
@@ -351,6 +360,7 @@ public class MenuSystem : MonoBehaviour {
         pauseScreen.SetActive(false);
         mainScreen.SetActive(false);
         settingsScreen.SetActive(false);
+        creditsScreen.SetActive(false);
         IntroTextScreen.SetActive(false);
     }
     #endregion
@@ -377,6 +387,7 @@ public class MenuSystem : MonoBehaviour {
         pauseScreen.SetActive(false);
         mainScreen.SetActive(false);
         settingsScreen.SetActive(false);
+        creditsScreen.SetActive(false);
 
         gm.SetLoadLevel(levelInt);
     }
@@ -486,6 +497,9 @@ public class MenuSystem : MonoBehaviour {
         if (value) {
             ResetMenus();
             levelSelection.SetActive(true);
+            levelSelectionController.ResetPosition();
+            levelSelection.GetComponentInChildren<LevelScroller>().ResetPosition();
+            levelSelectionController.MoveRight();
             currentMenuScreen = CurrentMenuScreen.levelSelect;
         } else {
             levelSelection.SetActive(false);
@@ -496,6 +510,8 @@ public class MenuSystem : MonoBehaviour {
     void quitLevelSelectionScreen() {
         if (currentMenuScreen == CurrentMenuScreen.levelSelect) {
             if (Input.GetKeyDown(KeyCode.Escape)) {
+                levelSelection.GetComponent<LevelSelectionController>().ResetPosition();
+                levelSelection.GetComponentInChildren<LevelScroller>().ResetPosition();
                 setLevelSelection(false);
             }
         }
@@ -526,6 +542,27 @@ public class MenuSystem : MonoBehaviour {
                     setSettings(false);
                     setPauseMenu(true);
                 }
+            }
+        }
+    }
+    #endregion
+
+    #region Credits
+    public void setCredits(bool value) {
+        if (value) {
+            ResetMenus();
+            creditsScreen.SetActive(true);
+            currentMenuScreen = CurrentMenuScreen.credits;
+        } else {
+            creditsScreen.SetActive(false);
+        }
+    }
+
+    void quitCreditsScreen() {
+        if (currentMenuScreen == CurrentMenuScreen.credits) {
+            if (Input.GetKeyDown(KeyCode.Escape)) {
+                setMainMenu(true);
+                setCredits(false);
             }
         }
     }

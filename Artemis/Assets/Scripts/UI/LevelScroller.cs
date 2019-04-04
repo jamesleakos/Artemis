@@ -18,7 +18,8 @@ public class LevelScroller : MonoBehaviour {
     // level ints
     public int minLevel;
     public int maxLevel;
-    int levelToLoad;
+    [HideInInspector]
+    public int levelToLoad;
     #endregion
 
     #region Movement Params
@@ -136,6 +137,13 @@ public class LevelScroller : MonoBehaviour {
         scrollerBox.localPosition = scrollerX;
 
         levelToLoad -= 1;
+        CheckSideButtons();
+    }
+
+    public void ResetPosition() {
+        Vector3 currentPos = scrollerBox.localPosition;
+        scrollerBox.localPosition = new Vector3(0, currentPos.y, currentPos.z);
+        levelToLoad = minLevel;
         CheckSideButtons();
     }
     #endregion
