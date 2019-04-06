@@ -6,11 +6,11 @@ using UnityEngine.UI;
 public class SideArrowButton : MonoBehaviour {
 
     #region Animation
-    Animator animator;
-    const string mouseIn = "mouseIn";
-    const string mouseOut = "mouseOut";
-    enum AnimationState { mouseIn, mouseOut }
-    AnimationState animationState;
+    //Animator animator;
+    //const string mouseIn = "mouseIn";
+    //const string mouseOut = "mouseOut";
+    //enum AnimationState { mouseIn, mouseOut }
+    //AnimationState animationState;
     #endregion
 
     Vector3 startingScale;
@@ -26,7 +26,7 @@ public class SideArrowButton : MonoBehaviour {
     }
 
     void Start() {
-        // currently am not using any animation
+        // currently am not using any animation, but there is a side arrow button animator;
         //animator = gameObject.GetComponent<Animator>();
         menuSystem = GameObject.FindGameObjectWithTag("MenuSystem").GetComponent<MenuSystem>();
         audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
@@ -55,12 +55,12 @@ public class SideArrowButton : MonoBehaviour {
 
     void PlayMouseOut() {
         //animator.Play(mouseOut);
-        animationState = AnimationState.mouseOut;
+        //animationState = AnimationState.mouseOut;
     }
 
     void PlayMouseIn() {
         //animator.Play(mouseIn);
-        animationState = AnimationState.mouseIn;
+        //animationState = AnimationState.mouseIn;
     }
 
     public void menuDisable() {
