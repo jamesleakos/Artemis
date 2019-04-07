@@ -608,6 +608,14 @@ public class MenuSystem : MonoBehaviour {
             if (difficultySettingsConfig.GetChild(i).name == "ArrowButtonScreen_DifficultyLittleGirl") {
                 difficultySettingsConfig.GetChild(i).GetComponentInChildren<ArrowButton>().TurnOffArrow();
             }
+            if (difficultySettingsConfig.GetChild(i).name == "ResetWarning") {
+                StartArch startArch = GameObject.FindObjectOfType<StartArch>();
+                if (startArch != null) {
+                    if (startArch.animationState != StartArch.AnimationState.WingsUpIdle) {
+                        difficultySettingsConfig.GetChild(i).GetComponentInChildren<Text>().text = "Difficulty will be set on next attempt";
+                    }
+                }
+            }
         }
     }
     #endregion
