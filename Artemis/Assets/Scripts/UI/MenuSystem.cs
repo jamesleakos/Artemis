@@ -81,9 +81,10 @@ public class MenuSystem : MonoBehaviour {
         introTextController = IntroTextScreen.GetComponent<IntroTextController>();
         levelSelectionController = levelSelection.GetComponent<LevelSelectionController>();
 
-        if (gm.gameDifficulty == GameMaster.GameDifficulty.littlegirl) {
+        gm.gameDifficulty = gm.goalDifficulty;
+        if (gm.goalDifficulty == GameMaster.GameDifficulty.littlegirl) {
             SetDifficultyToLittleGirl();
-        } else if (gm.gameDifficulty == GameMaster.GameDifficulty.goddess) {
+        } else if (gm.goalDifficulty == GameMaster.GameDifficulty.goddess) {
             SetDifficultyToGoddess();
         }
 
@@ -570,7 +571,7 @@ public class MenuSystem : MonoBehaviour {
     }
 
     public void SetDifficultyToLittleGirl() {
-        gm.gameDifficulty = GameMaster.GameDifficulty.littlegirl;
+        gm.goalDifficulty = GameMaster.GameDifficulty.littlegirl;
         if (onDifficultyChange != null) {
             onDifficultyChange();
         }
@@ -592,7 +593,7 @@ public class MenuSystem : MonoBehaviour {
         }
     }
     public void SetDifficultyToGoddess() {
-        gm.gameDifficulty = GameMaster.GameDifficulty.goddess;
+        gm.goalDifficulty = GameMaster.GameDifficulty.goddess;
         if (onDifficultyChange != null) {
             onDifficultyChange();
         }

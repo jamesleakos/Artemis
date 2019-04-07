@@ -41,14 +41,14 @@ public class DifficultyManager : MonoBehaviour {
     }
 
     public void SetDifficultySorter() {
-
-        if (gm.gameDifficulty == GameMaster.GameDifficulty.littlegirl) {
+        gm.gameDifficulty = gm.goalDifficulty;
+        if (gm.goalDifficulty == GameMaster.GameDifficulty.littlegirl) {
             if (onLittleGirl) {
                 EnableChildrenAndComponents(true);
             } else {
                 EnableChildrenAndComponents(false);
             }
-        } else if (gm.gameDifficulty == GameMaster.GameDifficulty.goddess) {
+        } else if (gm.goalDifficulty == GameMaster.GameDifficulty.goddess) {
             if (onGoddess) {
                 EnableChildrenAndComponents(true);
             } else {

@@ -12,6 +12,7 @@ public class GameMaster : MonoBehaviour {
 
     #region Difficulty Settings
     public enum GameDifficulty { littlegirl, shepherdess, goddess };
+    public GameDifficulty goalDifficulty;
     public GameDifficulty gameDifficulty;
     #endregion
 
