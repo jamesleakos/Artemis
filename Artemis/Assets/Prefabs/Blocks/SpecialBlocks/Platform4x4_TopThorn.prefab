@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3264757648117912113}
   m_Layer: 0
-  m_Name: Platform_Thorns4x4
+  m_Name: Platform4x4_TopThorn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -94,6 +94,20 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.05, y: 1.1}
   m_EdgeRadius: 0
+--- !u!114 &5150924576404072826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3614131949081135012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6eaa554066c4f64ca2d1f7a175ba27f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onLittleGirl: 0
+  onGoddess: 1
 --- !u!1001 &160643993661008744
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -343,6 +357,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2b1733d4d5f42ba488c81799b180e1b9, type: 3}
+--- !u!1 &3614131949081135012 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 625103911387614392, guid: 2b1733d4d5f42ba488c81799b180e1b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 4218511011166571292}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3614131949081135008 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 625103911387614396, guid: 2b1733d4d5f42ba488c81799b180e1b9,

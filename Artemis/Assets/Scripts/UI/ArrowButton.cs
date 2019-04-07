@@ -25,7 +25,7 @@ public class ArrowButton : MonoBehaviour {
 
     MenuSystem menuSystem;
     AudioManager audioManager;
-    public GameMaster gm;
+    GameMaster gm;
 
     void Start() {
         gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();

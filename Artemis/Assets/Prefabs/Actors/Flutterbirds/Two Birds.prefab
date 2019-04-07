@@ -90,7 +90,7 @@ MonoBehaviour:
   curveOn: 0
   movementState: 0
   randomFlyingSpeedMult: 0.4
-  followPlayerLength: 2
+  followPlayerLength: 4
   followPlayerCooldownLength: 2
   playerFollower: 1
   followPlayerDistance: 7
@@ -147,6 +147,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: bird1
       objectReference: {fileID: 0}
+    - target: {fileID: 5954725935498377923, guid: 56c29c3d8314e354b90354444e7dd620,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1702680629898318570, guid: 56c29c3d8314e354b90354444e7dd620,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -200,11 +205,6 @@ PrefabInstance:
     - target: {fileID: 1702680629898318570, guid: 56c29c3d8314e354b90354444e7dd620,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5954725935498377923, guid: 56c29c3d8314e354b90354444e7dd620,
-        type: 3}
-      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1443600135359888204, guid: 56c29c3d8314e354b90354444e7dd620,
@@ -307,6 +307,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: bird2
       objectReference: {fileID: 0}
+    - target: {fileID: 5954725935498377923, guid: 56c29c3d8314e354b90354444e7dd620,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1702680629898318570, guid: 56c29c3d8314e354b90354444e7dd620,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -360,11 +365,6 @@ PrefabInstance:
     - target: {fileID: 1702680629898318570, guid: 56c29c3d8314e354b90354444e7dd620,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5954725935498377923, guid: 56c29c3d8314e354b90354444e7dd620,
-        type: 3}
-      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1443600135359888204, guid: 56c29c3d8314e354b90354444e7dd620,

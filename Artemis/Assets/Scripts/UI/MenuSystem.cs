@@ -81,6 +81,12 @@ public class MenuSystem : MonoBehaviour {
         introTextController = IntroTextScreen.GetComponent<IntroTextController>();
         levelSelectionController = levelSelection.GetComponent<LevelSelectionController>();
 
+        string diff = PlayerPrefs.GetString("GameDifficulty", "Goddess");
+        if (diff == "LittleGirl") {
+            gm.goalDifficulty = GameMaster.GameDifficulty.littlegirl;
+        } else if (diff == "Goddess") {
+            gm.goalDifficulty = GameMaster.GameDifficulty.goddess;
+        }
         gm.gameDifficulty = gm.goalDifficulty;
         if (gm.goalDifficulty == GameMaster.GameDifficulty.littlegirl) {
             SetDifficultyToLittleGirl();
@@ -576,6 +582,7 @@ public class MenuSystem : MonoBehaviour {
 
     public void SetDifficultyToLittleGirl() {
         gm.goalDifficulty = GameMaster.GameDifficulty.littlegirl;
+        PlayerPrefs.SetString("GameDifficulty", "LittleGirl");
         if (onDifficultyChange != null) {
             onDifficultyChange();
         }
@@ -598,6 +605,7 @@ public class MenuSystem : MonoBehaviour {
     }
     public void SetDifficultyToGoddess() {
         gm.goalDifficulty = GameMaster.GameDifficulty.goddess;
+        PlayerPrefs.SetString("GameDifficulty", "Goddess");
         if (onDifficultyChange != null) {
             onDifficultyChange();
         }

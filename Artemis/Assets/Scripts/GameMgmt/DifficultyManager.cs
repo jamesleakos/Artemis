@@ -70,6 +70,9 @@ public class DifficultyManager : MonoBehaviour {
         foreach (AudioSource a in GetComponents<AudioSource>()) {
             a.enabled = setTo;
         }
+        foreach (SpriteRenderer s in GetComponents<SpriteRenderer>()) {
+            s.enabled = setTo;
+        }
         foreach (Transform child in transform) {
             child.gameObject.SetActive(setTo);
         }
