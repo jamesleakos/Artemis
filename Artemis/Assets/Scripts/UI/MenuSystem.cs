@@ -548,7 +548,11 @@ public class MenuSystem : MonoBehaviour {
             currentMenuScreen = CurrentMenuScreen.settings;
             for (int i = 0; i < difficultySettingsConfig.childCount; i++) {
                 if (difficultySettingsConfig.GetChild(i).name == "ResetWarning") {
-                    difficultySettingsConfig.GetChild(i).GetComponentInChildren<Text>().text = "";
+                    if (gm.gameDifficulty != gm.goalDifficulty && SceneManager.GetActiveScene().buildIndex > gm.levelPaddingBesidesMain) {
+                        difficultySettingsConfig.GetChild(i).GetComponentInChildren<Text>().text = "Difficulty will be set on next attempt";
+                    } else {
+                        difficultySettingsConfig.GetChild(i).GetComponentInChildren<Text>().text = "";
+                    }
                 }
             }
         } else {
