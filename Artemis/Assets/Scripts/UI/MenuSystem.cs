@@ -55,9 +55,16 @@ public class MenuSystem : MonoBehaviour {
 
     #endregion
 
+    #region Difficulty Change
+
+    public delegate void OnDifficultyChange();
+    public static event OnDifficultyChange onDifficultyChange;
+
+    #endregion
+
     Player targetPlayer;
     CameraZoom camZoom;
-    Transform camera;
+    Transform myCamera;
     AudioManager audioManager;
     public GameMaster gm;
 
@@ -66,7 +73,7 @@ public class MenuSystem : MonoBehaviour {
 
     void Start() {
 
-        camera = GameObject.FindGameObjectWithTag("MainCamera").transform;
+        myCamera = GameObject.FindGameObjectWithTag("MainCamera").transform;
         camZoom = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraZoom>();
         audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
         gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
@@ -538,6 +545,11 @@ public class MenuSystem : MonoBehaviour {
             ResetMenus();
             settingsScreen.SetActive(true);
             currentMenuScreen = CurrentMenuScreen.settings;
+            for (int i = 0; i < difficultySettingsConfig.childCount; i++) {
+                if (difficultySettingsConfig.GetChild(i).name == "ResetWarning") {
+                    difficultySettingsConfig.GetChild(i).GetComponentInChildren<Text>().text = "";
+                }
+            }
         } else {
             settingsScreen.SetActive(false);
         }
@@ -559,6 +571,9 @@ public class MenuSystem : MonoBehaviour {
 
     public void SetDifficultyToLittleGirl() {
         gm.gameDifficulty = GameMaster.GameDifficulty.littlegirl;
+        if (onDifficultyChange != null) {
+            onDifficultyChange();
+        }
         for (int i = 0; i < difficultySettingsConfig.childCount; i++) {
             if (difficultySettingsConfig.GetChild(i).name == "ArrowButtonScreen_DifficultyLittleGirl") {
                 difficultySettingsConfig.GetChild(i).GetComponentInChildren<ArrowButton>().TurnOnArrow();
@@ -566,10 +581,21 @@ public class MenuSystem : MonoBehaviour {
             if (difficultySettingsConfig.GetChild(i).name == "ArrowButtonScreen_DifficultyGoddess") {
                 difficultySettingsConfig.GetChild(i).GetComponentInChildren<ArrowButton>().TurnOffArrow();
             }
+            if (difficultySettingsConfig.GetChild(i).name == "ResetWarning") {
+                StartArch startArch = GameObject.FindObjectOfType<StartArch>();
+                if (startArch != null) {
+                    if (startArch.animationState != StartArch.AnimationState.WingsUpIdle) {
+                        difficultySettingsConfig.GetChild(i).GetComponentInChildren<Text>().text = "Difficulty will be set on next attempt";
+                    }
+                }
+            }
         }
     }
     public void SetDifficultyToGoddess() {
         gm.gameDifficulty = GameMaster.GameDifficulty.goddess;
+        if (onDifficultyChange != null) {
+            onDifficultyChange();
+        }
         for (int i = 0; i < difficultySettingsConfig.childCount; i++) {
             if (difficultySettingsConfig.GetChild(i).name == "ArrowButtonScreen_DifficultyGoddess") {
                 difficultySettingsConfig.GetChild(i).GetComponentInChildren<ArrowButton>().TurnOnArrow();

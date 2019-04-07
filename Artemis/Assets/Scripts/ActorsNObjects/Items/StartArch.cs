@@ -11,8 +11,8 @@ public class StartArch : MonoBehaviour {
     const string WingsGoDown = "WingsGoDown";
     const string WingsUpIdle = "WingsUpIdle";
     const string WingsDownIdle = "WingsDownIdle";
-    enum AnimationState { WingsUpIdle, WingsGoDown, WingsDownIdle }
-    AnimationState animationState;
+    public enum AnimationState { WingsUpIdle, WingsGoDown, WingsDownIdle }
+    public AnimationState animationState;
     #endregion
 
     GameMaster gm;
