@@ -10,12 +10,6 @@ public class DifficultyManager : MonoBehaviour {
     public bool onLittleGirl = true;
     public bool onGoddess = true;
 
-    #region Displayed Difficulty
-    public bool difficultyInSync;
-    //public enum DisplayedDifficulty { littlegirl, shepherdess, goddess };
-    //public DisplayedDifficulty displayedDifficulty;
-    #endregion
-
     // Start and Update
     #region Start and Update, On Enable/Disable
 
