@@ -109,5 +109,19 @@ public class ArrowButton : MonoBehaviour {
         gm.ReplayLevel();
     }
 
+    public void TurnOffArrow() {
+        for (int i = 0; i < transform.childCount; i++) {
+            if (transform.GetChild(i).name == "ArrowMask") {
+                transform.GetChild(i).GetComponentInChildren<Image>().color = new Color32(255,255,255,0);
+            }
+        }
+    }
+    public void TurnOnArrow() {
+        for (int i = 0; i < transform.childCount; i++) {
+            if (transform.GetChild(i).name == "ArrowMask") {
+                transform.GetChild(i).GetComponentInChildren<Image>().color = new Color32(255, 255, 255, 255);
+            }
+        }
+    }
 
 }

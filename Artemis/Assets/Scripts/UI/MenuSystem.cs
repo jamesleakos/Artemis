@@ -23,6 +23,7 @@ public class MenuSystem : MonoBehaviour {
     public Transform buttonConfig;
     public Transform volumeConfig;
     public Transform otherSettingsConfig;
+    public Transform difficultySettingsConfig;
     public GameObject timer;
     public GameObject bestTime;
 
@@ -72,6 +73,12 @@ public class MenuSystem : MonoBehaviour {
         fadeMaskController = fadeMask.GetComponent<MaskController>();
         introTextController = IntroTextScreen.GetComponent<IntroTextController>();
         levelSelectionController = levelSelection.GetComponent<LevelSelectionController>();
+
+        if (gm.gameDifficulty == GameMaster.GameDifficulty.littlegirl) {
+            SetDifficultyToLittleGirl();
+        } else if (gm.gameDifficulty == GameMaster.GameDifficulty.goddess) {
+            SetDifficultyToGoddess();
+        }
 
         basicSettings();
         SetPlayerPrefs();
@@ -125,11 +132,13 @@ public class MenuSystem : MonoBehaviour {
 
         #region Other Settings
         for (int i = 0; i < otherSettingsConfig.childCount; i++) {
-
             if (otherSettingsConfig.GetChild(i).name == "CameraZoomScale") {
                 otherSettingsConfig.GetChild(i).Find("Slider").GetComponentInChildren<Slider>().value = PlayerPrefs.GetFloat("CameraZoomScale",1f);
             }
         }
+        #region Difficulty Settings
+
+
         #endregion
     }
 
@@ -175,6 +184,8 @@ public class MenuSystem : MonoBehaviour {
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         //basicSettings();
     }
+    #endregion
+
     #endregion
 
     #region Settings Changes
@@ -542,6 +553,29 @@ public class MenuSystem : MonoBehaviour {
                     setSettings(false);
                     setPauseMenu(true);
                 }
+            }
+        }
+    }
+
+    public void SetDifficultyToLittleGirl() {
+        gm.gameDifficulty = GameMaster.GameDifficulty.littlegirl;
+        for (int i = 0; i < difficultySettingsConfig.childCount; i++) {
+            if (difficultySettingsConfig.GetChild(i).name == "ArrowButtonScreen_DifficultyLittleGirl") {
+                difficultySettingsConfig.GetChild(i).GetComponentInChildren<ArrowButton>().TurnOnArrow();
+            }
+            if (difficultySettingsConfig.GetChild(i).name == "ArrowButtonScreen_DifficultyGoddess") {
+                difficultySettingsConfig.GetChild(i).GetComponentInChildren<ArrowButton>().TurnOffArrow();
+            }
+        }
+    }
+    public void SetDifficultyToGoddess() {
+        gm.gameDifficulty = GameMaster.GameDifficulty.goddess;
+        for (int i = 0; i < difficultySettingsConfig.childCount; i++) {
+            if (difficultySettingsConfig.GetChild(i).name == "ArrowButtonScreen_DifficultyGoddess") {
+                difficultySettingsConfig.GetChild(i).GetComponentInChildren<ArrowButton>().TurnOnArrow();
+            }
+            if (difficultySettingsConfig.GetChild(i).name == "ArrowButtonScreen_DifficultyLittleGirl") {
+                difficultySettingsConfig.GetChild(i).GetComponentInChildren<ArrowButton>().TurnOffArrow();
             }
         }
     }

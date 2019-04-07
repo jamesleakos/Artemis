@@ -10,6 +10,11 @@ public class GameMaster : MonoBehaviour {
     private MenuSystem menuSystem;
     public GameObject mask;
 
+    #region Difficulty Settings
+    public enum GameDifficulty { littlegirl, shepherdess, goddess };
+    public GameDifficulty gameDifficulty;
+    #endregion
+
     #region Key Codes
     public KeyCode left { get; set; }
     public KeyCode right { get; set; }
