@@ -60,6 +60,10 @@ public class Player : MonoBehaviour {
     public float attackVelocity = 40;
     float endAttackTime;
     public float attackLength = 0.1f;
+
+    // attack tolerance
+    float endAttackTolerance;
+    float attackToleranceLength = 0.2f;
     #endregion
 
     #region Air Pause and Shooting
@@ -417,8 +421,14 @@ public class Player : MonoBehaviour {
             //input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
             if (Input.GetKey(GameMaster.gm.left) && !Input.GetKey(GameMaster.gm.right)) {
                 input = Vector2.left;
+                if (Time.time < endAttackTolerance && !(controller.collisions.left || controller.collisions.right || controller.collisions.below)) {
+                    DashAttack();
+                }
             } else if (Input.GetKey(GameMaster.gm.right) && !Input.GetKey(GameMaster.gm.left)) {
                 input = Vector2.right;
+                if (Time.time < endAttackTolerance && !(controller.collisions.left || controller.collisions.right || controller.collisions.below)) {
+                    DashAttack();
+                }
             } else {
                 input = new Vector2(0, 0);
             }
@@ -614,10 +624,14 @@ public class Player : MonoBehaviour {
 
     void DashAttack() {
         if (attacksRemaining > 0) {
-            attacking = true;
-            PlayDashSound();
-            endAttackTime = Time.time + attackLength;
-            attacksRemaining--;
+            if (wallSliding) {
+                endAttackTolerance = Time.time + attackToleranceLength;
+            } else {
+                attacking = true;
+                PlayDashSound();
+                endAttackTime = Time.time + attackLength;
+                attacksRemaining--;
+            }
         }
     }
 
