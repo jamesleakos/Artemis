@@ -80,6 +80,10 @@ public class Raven : MonoBehaviour {
 
     #endregion
 
+    #region Type
+    public bool talkative = false;
+    #endregion
+
     Controller2D controller;
     private Collider2D thisCollider;
     AudioManager audioManager;
@@ -172,6 +176,14 @@ public class Raven : MonoBehaviour {
                         ravenText.PlayActivating();
                     } else if (ravenText.animationState == RavenText.AnimationState.activeIdle) {
                         ravenText.PlayDeactivating();
+                    }
+                }
+            } else if (talkative) {
+                if (ravenText != null) {
+                    if (ravenText.animationState == RavenText.AnimationState.inactiveIdle) {
+                        SwitchToIdleSquacking();
+                        idleCycleCounter = 0;
+                        ravenText.PlayActivating();
                     }
                 }
             }

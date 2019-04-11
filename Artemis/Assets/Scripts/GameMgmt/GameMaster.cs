@@ -218,7 +218,7 @@ public class GameMaster : MonoBehaviour {
             case 8: return "Chapter " + sceneNumber.ToString() + ":\n" + "The Underroad";
             case 9: return "Chapter " + sceneNumber.ToString() + ":\n" + "The Descent";
             case 10: return "Chapter " + sceneNumber.ToString() + ":\n" + "Olympian Idyll";
-            default: return "Need to Add more to Return Scene Names";
+            default: return "";
         }
     }
     public string ReturnSceneIntroText(int sceneNumber) {
