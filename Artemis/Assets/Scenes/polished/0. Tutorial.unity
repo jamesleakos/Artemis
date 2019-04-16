@@ -3788,11 +3788,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4545031241093066, guid: f8e431e25331d704dbb12d2ff2616c20, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -215.38069
+      value: -212.6
       objectReference: {fileID: 0}
     - target: {fileID: 4545031241093066, guid: f8e431e25331d704dbb12d2ff2616c20, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -38.69077
+      value: -36.7
       objectReference: {fileID: 0}
     - target: {fileID: 4545031241093066, guid: f8e431e25331d704dbb12d2ff2616c20, type: 3}
       propertyPath: m_LocalPosition.z
@@ -10016,7 +10016,7 @@ PrefabInstance:
     - target: {fileID: 8028979375537425536, guid: 1b76c30c489139241bb3b4b1131af365,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 67.98
+      value: 70.6
       objectReference: {fileID: 0}
     - target: {fileID: 8028979375537425536, guid: 1b76c30c489139241bb3b4b1131af365,
         type: 3}
@@ -10930,18 +10930,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 12800000, guid: 6a93a24bb3dda2647b48dd17aa99b875,
         type: 3}
-    - target: {fileID: 1704107863587412, guid: 7f7c8c2b7aac3fe4b88feda2d20fd123, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1974535565537232, guid: 7f7c8c2b7aac3fe4b88feda2d20fd123, type: 3}
       propertyPath: m_IsActive
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 133638732429817411, guid: 7f7c8c2b7aac3fe4b88feda2d20fd123,
-        type: 3}
-      propertyPath: m_Length
-      value: 12.308224
       objectReference: {fileID: 0}
     - target: {fileID: 8468131441833401826, guid: 7f7c8c2b7aac3fe4b88feda2d20fd123,
         type: 3}
@@ -10953,6 +10944,15 @@ PrefabInstance:
       propertyPath: ravenText
       value: 
       objectReference: {fileID: 215871201}
+    - target: {fileID: 1704107863587412, guid: 7f7c8c2b7aac3fe4b88feda2d20fd123, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 133638732429817411, guid: 7f7c8c2b7aac3fe4b88feda2d20fd123,
+        type: 3}
+      propertyPath: m_Length
+      value: 12.308224
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7f7c8c2b7aac3fe4b88feda2d20fd123, type: 3}
 --- !u!4 &1585336968 stripped
@@ -11246,7 +11246,7 @@ PrefabInstance:
     - target: {fileID: 8028979375537425536, guid: 1b76c30c489139241bb3b4b1131af365,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 46.9
+      value: 40.9
       objectReference: {fileID: 0}
     - target: {fileID: 8028979375537425536, guid: 1b76c30c489139241bb3b4b1131af365,
         type: 3}
@@ -11321,10 +11321,8 @@ PrefabInstance:
     - target: {fileID: 7918549820095340030, guid: 1b76c30c489139241bb3b4b1131af365,
         type: 3}
       propertyPath: m_Text
-      value: 'Hold "Space" to load an arrow. If you do this in the air, you will float
-        for a short time. Press the right mouse buttom while the arrow is loaded to
-        fire the arrow. This float can be also be used to extend the height of your
-        jump a small bit.
+      value: 'Hold "Space" to load an arrow and to float in the air. While holding
+        "Space", use the left mouse button to fire the arrow.
 
 
         Shoot the robot in the glowing viewport to destroy it before it destroys you.'
