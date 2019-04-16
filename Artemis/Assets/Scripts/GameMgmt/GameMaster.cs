@@ -218,58 +218,67 @@ public class GameMaster : MonoBehaviour {
             case 8: return "Chapter " + sceneNumber.ToString() + ":\n" + "Circuitous Route";
             case 9: return "Chapter " + sceneNumber.ToString() + ":\n" + "Briar Isles";
             case 10: return "Chapter " + sceneNumber.ToString() + ":\n" + "Olympian Idyll";
-            default: return "";
+            default: return "Need to Add more to Return Scene Names";
         }
     }
     public string ReturnSceneIntroText(int sceneNumber) {
         sceneNumber = sceneNumber - levelPaddingBesidesMain;
         switch (sceneNumber) {
-            case 1: return "Young girls should never argue," + "/n" +
-                "Raise their voice, or cry." + "/n" +
-                "If you disagree, just smile -" + "/n" +
+            case 0:
+                return "Young girls should never argue," + "\n" +
+                        "Raise their voice, or cry." + "\n" +
+                        "If you disagree, just smile -" + "\n" +
+                        "And put an arrow through their eye.";
+            case 1: return "Young girls should never argue," + "\n" +
+                "Raise their voice, or cry." + "\n" +
+                "If you disagree, just smile -" + "\n" +
                 "And put an arrow through their eye.";
             case 2:
-                return "Young girls should never argue," + "/n" +
-                "Raise their voice, or cry." + "/n" +
-                "If you disagree, just smile -" + "/n" +
+                return "Young girls should never argue," + "\n" +
+                "Raise their voice, or cry." + "\n" +
+                "If you disagree, just smile -" + "\n" +
                 "And put an arrow through their eye.";
             case 3:
-                return "Young girls should never argue," + "/n" +
-                "Raise their voice, or cry." + "/n" +
-                "If you disagree, just smile -" + "/n" +
+                return "Young girls should never argue," + "\n" +
+                "Raise their voice, or cry." + "\n" +
+                "If you disagree, just smile -" + "\n" +
                 "And put an arrow through their eye.";
             case 4:
-                return "Young girls should never argue," + "/n" +
-                "Raise their voice, or cry." + "/n" +
-                "If you disagree, just smile -" + "/n" +
+                return "Young girls should never argue," + "\n" +
+                "Raise their voice, or cry." + "\n" +
+                "If you disagree, just smile -" + "\n" +
                 "And put an arrow through their eye.";
             case 5:
-                return "Young girls should never argue," + "/n" +
-                 "Raise their voice, or cry." + "/n" +
-                 "If you disagree, just smile -" + "/n" +
+                return "Young girls should never argue," + "\n" +
+                 "Raise their voice, or cry." + "\n" +
+                 "If you disagree, just smile -" + "\n" +
                  "And put an arrow through their eye.";
             case 6:
-                return "Young girls should never argue," + "/n" +
-                "Raise their voice, or cry." + "/n" +
-                "If you disagree, just smile -" + "/n" +
+                return "Young girls should never argue," + "\n" +
+                "Raise their voice, or cry." + "\n" +
+                "If you disagree, just smile -" + "\n" +
                 "And put an arrow through their eye.";
             case 7:
-                return "Young girls should never argue," + "/n" +
-                "Raise their voice, or cry." + "/n" +
-                "If you disagree, just smile -" + "/n" +
+                return "Young girls should never argue," + "\n" +
+                "Raise their voice, or cry." + "\n" +
+                "If you disagree, just smile -" + "\n" +
                 "And put an arrow through their eye.";
             case 8:
-                return "Young girls should never argue," + "/n" +
-                "Raise their voice, or cry." + "/n" +
-                "If you disagree, just smile -" + "/n" +
+                return "Young girls should never argue," + "\n" +
+                "Raise their voice, or cry." + "\n" +
+                "If you disagree, just smile -" + "\n" +
                 "And put an arrow through their eye.";
             case 9:
-                return "Young girls should never argue," + "/n" +
-                "Raise their voice, or cry." + "/n" +
-                "If you disagree, just smile -" + "/n" +
+                return "Young girls should never argue," + "\n" +
+                "Raise their voice, or cry." + "\n" +
+                "If you disagree, just smile -" + "\n" +
                 "And put an arrow through their eye.";
 
-            default: return "Need to Add more to Return Scene Names";
+            default:
+                return "Young girls should never argue," + "\n" +
+           "Raise their voice, or cry." + "\n" +
+           "If you disagree, just smile -" + "\n" +
+           "And put an arrow through their eye.";
         }
     }
     #endregion

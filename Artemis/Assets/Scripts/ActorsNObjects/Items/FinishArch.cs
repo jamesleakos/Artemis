@@ -24,11 +24,14 @@ public class FinishArch : MonoBehaviour {
         animator = gameObject.GetComponent<Animator>();
         gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
 		menuSystem = GameObject.FindGameObjectWithTag("MenuSystem").GetComponent<MenuSystem>();
-        RunTimeText = TransformDeepChildExtension.FindDeepChild(gameObject.transform, "RunTimeText").GetComponent<Text>();
-        BestTimeText = TransformDeepChildExtension.FindDeepChild(gameObject.transform, "BestTimeText").GetComponent<Text>();
 
-        RunTimeText.text = "";
-        BestTimeText.text = "";
+        if (SceneManager.GetActiveScene().buildIndex != gm.levelPaddingBesidesMain) {
+            RunTimeText = TransformDeepChildExtension.FindDeepChild(gameObject.transform, "RunTimeText").GetComponent<Text>();
+            BestTimeText = TransformDeepChildExtension.FindDeepChild(gameObject.transform, "BestTimeText").GetComponent<Text>();
+
+            RunTimeText.text = "";
+            BestTimeText.text = "";
+        }
     }
 
     void OnTriggerEnter2D(Collider2D collider) {
@@ -37,17 +40,19 @@ public class FinishArch : MonoBehaviour {
             animationState = AnimationState.WingsUp;
             menuSystem.SetTimer(false);
 
-            float RunTime = menuSystem.timer.GetComponent<Timer>().runningTime;
-            RunTimeText.text = "Run Time: " + RunTime.ToString("0.#");
-            float LevelBest = PlayerPrefs.GetFloat("BestTimeLevel" + SceneManager.GetActiveScene().buildIndex, 0f);
+            if (SceneManager.GetActiveScene().buildIndex != gm.levelPaddingBesidesMain) {
+                float RunTime = menuSystem.timer.GetComponent<Timer>().runningTime;
+                RunTimeText.text = "Run Time: " + RunTime.ToString("0.#");
+                float LevelBest = PlayerPrefs.GetFloat("BestTimeLevel" + SceneManager.GetActiveScene().buildIndex, 0f);
 
-            // Not best time
-            if (RunTime > LevelBest && LevelBest != 0f) {
-                BestTimeText.text = "Best Time: " + LevelBest.ToString("0.#");
-            } else {
-                // Best time
-                PlayerPrefs.SetFloat("BestTimeLevel" + SceneManager.GetActiveScene().buildIndex, RunTime);
-                BestTimeText.text = "New Best Time!";
+                // Not best time
+                if (RunTime > LevelBest && LevelBest != 0f) {
+                    BestTimeText.text = "Best Time: " + LevelBest.ToString("0.#");
+                } else {
+                    // Best time
+                    PlayerPrefs.SetFloat("BestTimeLevel" + SceneManager.GetActiveScene().buildIndex, RunTime);
+                    BestTimeText.text = "New Best Time!";
+                }
             }
         }
     }

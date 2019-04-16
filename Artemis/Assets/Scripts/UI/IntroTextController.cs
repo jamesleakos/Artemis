@@ -22,7 +22,7 @@ public class IntroTextController : MonoBehaviour {
         gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
 
         introText = gameObject.GetComponentInChildren<Text>();
-        introText.text = gm.ReturnSceneNames(gm.levelToLoad);
+        introText.text = gm.ReturnSceneIntroText(gm.levelToLoad);
     }
 
     public void FadeIn() {
