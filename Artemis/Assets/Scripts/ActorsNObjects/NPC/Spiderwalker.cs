@@ -59,6 +59,10 @@ public class Spiderwalker : MonoBehaviour {
     #endregion
 
     #region Shooting
+
+    bool passive = false;
+    public bool alwaysPassive = false;
+
     public float loadTime = 0.1f;
     public float fireCoolDownTime = 0.4f;
     float endLoadTime;
@@ -162,6 +166,7 @@ public class Spiderwalker : MonoBehaviour {
     Controller2D controller;
     private Collider2D thisCollider;
 	AudioManager audioManager;
+    GameMaster gm;
 
     void Start() {
 
@@ -173,6 +178,7 @@ public class Spiderwalker : MonoBehaviour {
 		audioManager = GameObject.FindGameObjectWithTag ("AudioManager").GetComponent<AudioManager>();
 
         cam = Camera.main;
+        gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
 
         footbone = TransformDeepChildExtension.FindDeepChild(gameObject.transform, "Front Foot");
         bow = TransformDeepChildExtension.FindDeepChild(gameObject.transform, "Bow");
@@ -187,6 +193,15 @@ public class Spiderwalker : MonoBehaviour {
         destPoint = globalMaxPatrolRange;
         patrolMovementState = PatrolMovementState.max;
         faceDirX = 1;
+    }
+
+    private void OnEnable() {
+        gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
+        MenuSystem.onDifficultyChange += SetDifficulty;
+    }
+
+    private void OnDisable() {
+        MenuSystem.onDifficultyChange -= SetDifficulty;
     }
 
     void Update() {
@@ -208,6 +223,28 @@ public class Spiderwalker : MonoBehaviour {
 			}
         }
     }
+
+    #region Difficulty
+    public void SetDifficulty() {
+        StartArch startArch = GameObject.FindObjectOfType<StartArch>();
+        if (!(startArch != null)) {
+            SetDifficultySorter();
+        } else {
+            if (startArch.animationState == StartArch.AnimationState.WingsUpIdle) {
+                SetDifficultySorter();
+            }
+        }
+    }
+
+    public void SetDifficultySorter() {
+        gm.gameDifficulty = gm.goalDifficulty;
+        if (gm.goalDifficulty == GameMaster.GameDifficulty.littlegirl) {
+            passive = true;
+        } else if (gm.goalDifficulty == GameMaster.GameDifficulty.goddess) {
+            passive = false;
+        }
+    }
+    #endregion
 
     #region Behavs
     void SpiderwalkerBehavior() {
@@ -307,7 +344,7 @@ public class Spiderwalker : MonoBehaviour {
             if (Time.time > NextTimeToRaycast) {
                 RaycastHit2D hit = LookAtPlayerSpiderWalker();
                 if (hit && hit.transform.tag == "Player") {
-                    if (Time.time > timeToFire) {
+                    if (Time.time > timeToFire && !passive && !alwaysPassive) {
                         SwitchToFiring();
                     }
                     endAlertTime = Time.time + alertAttentionSpan;
