@@ -36,6 +36,8 @@ public class WhiteRaven : MonoBehaviour {
 
     #region State and determining state and FaceDirX
 
+    bool passive;
+
     public int faceDirX;
 
     // states
@@ -117,6 +119,15 @@ public class WhiteRaven : MonoBehaviour {
         faceDirX = -1;
     }
 
+    private void OnEnable() {
+        gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
+        MenuSystem.onDifficultyChange += SetDifficulty;
+    }
+
+    private void OnDisable() {
+        MenuSystem.onDifficultyChange -= SetDifficulty;
+    }
+
     void Update() {
         planes = GeometryUtility.CalculateFrustumPlanes(cam);
 
@@ -138,6 +149,28 @@ public class WhiteRaven : MonoBehaviour {
             }
         }
     }
+
+    #region Difficulty
+    public void SetDifficulty() {
+        StartArch startArch = GameObject.FindObjectOfType<StartArch>();
+        if (!(startArch != null)) {
+            SetDifficultySorter();
+        } else {
+            if (startArch.animationState == StartArch.AnimationState.WingsUpIdle) {
+                SetDifficultySorter();
+            }
+        }
+    }
+
+    public void SetDifficultySorter() {
+        gm.gameDifficulty = gm.goalDifficulty;
+        if (gm.goalDifficulty == GameMaster.GameDifficulty.littlegirl) {
+            passive = true;
+        } else if (gm.goalDifficulty == GameMaster.GameDifficulty.goddess) {
+            passive = false;
+        }
+    }
+    #endregion
 
     #region Behavs
     void RavenBehavior() {
@@ -210,7 +243,7 @@ public class WhiteRaven : MonoBehaviour {
         }
 
         if (playerInSight) {
-            if (player.bowOut) {
+            if (player.bowOut && !passive) {
                 boneRotation = player.midriffBone.rotation * Quaternion.Euler(0, 0, 90);
 
                 firePointPosition = new Vector2(player.midriffBone.position.x, player.midriffBone.transform.position.y);
