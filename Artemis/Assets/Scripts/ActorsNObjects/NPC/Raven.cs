@@ -82,6 +82,7 @@ public class Raven : MonoBehaviour {
 
     #region Type
     public bool talkative = false;
+    public bool brave = false;
     #endregion
 
     Controller2D controller;
@@ -207,7 +208,9 @@ public class Raven : MonoBehaviour {
                 float absAngle = Mathf.Abs(Quaternion.Angle(firePointRotation, boneRotation));
                 
                 if (absAngle < frightenAngle) {
-                    SwitchToFlying();
+                    if (!brave) {
+                        SwitchToFlying();
+                    }
                 }
             }
         }

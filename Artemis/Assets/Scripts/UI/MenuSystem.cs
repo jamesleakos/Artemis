@@ -443,6 +443,7 @@ public class MenuSystem : MonoBehaviour {
         } else {
             pauseScreen.SetActive(false);
             currentMenuScreen = CurrentMenuScreen.none;
+            targetPlayer.inputOnButtonPress = true;
         }
     }
 

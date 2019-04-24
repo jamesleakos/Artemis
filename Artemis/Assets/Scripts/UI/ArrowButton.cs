@@ -95,7 +95,8 @@ public class ArrowButton : MonoBehaviour {
 
     public void MenuClick() {
         if (gameObject.activeSelf == true) {
-            MenuDisable();
+            PlayMouseOut();
+            myText.fontSize = minFont;
             audioManager.PlaySound("MenuClick");
         }
     }
