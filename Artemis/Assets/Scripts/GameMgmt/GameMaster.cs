@@ -217,7 +217,7 @@ public class GameMaster : MonoBehaviour {
             case 7: return "Chapter " + sceneNumber.ToString() + ":\n" + "Path to Oblivion";
             case 8: return "Chapter " + sceneNumber.ToString() + ":\n" + "Circuitous Route";
             case 9: return "Chapter " + sceneNumber.ToString() + ":\n" + "Briar Isles";
-            case 10: return "Chapter " + sceneNumber.ToString() + ":\n" + "Olympian Idyll";
+            case 10: return "Chapter " + sceneNumber.ToString() + ":\n" + "Corycian Caves";
             default: return "Need to Add more to Return Scene Names";
         }
     }

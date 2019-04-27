@@ -150,7 +150,9 @@ public class Deer : MonoBehaviour {
     #endregion
 
     #region Spawning
-
+    bool spawner;
+    public bool gameEnder;
+    bool gameComplete = false;
     GameMaster gm;
     bool spawnTriggered;
 
@@ -163,6 +165,7 @@ public class Deer : MonoBehaviour {
     private Collider2D thisCollider;
     AudioManager audioManager;
 
+    DeerWinCanvas winCanvas;
     Transform headBone;
 
     void Start() {
@@ -176,6 +179,7 @@ public class Deer : MonoBehaviour {
         cam = Camera.main;
 
         headBone = TransformDeepChildExtension.FindDeepChild(gameObject.transform, "HeadBone");
+        winCanvas = TransformDeepChildExtension.FindDeepChild(gameObject.transform, "WinCanvas").GetComponent<DeerWinCanvas>();
 
         gravity = -155f;
 
@@ -315,7 +319,7 @@ public class Deer : MonoBehaviour {
         if (GeometryUtility.TestPlanesAABB(planes, thisCollider.bounds)) {
             if (Time.time > NextTimeToRaycast) {
                 RaycastHit2D hit = LookAtPlayerDeer();
-                if (playerInSight && player.velocity.x > 1) {
+                if (playerInSight && Mathf.Abs(player.velocity.x) > 1) {
                     SwitchToScared();
                 } else {
                     if (Time.time > endAlertTime) {
@@ -352,7 +356,7 @@ public class Deer : MonoBehaviour {
 
     void FriendlyBehavior() {
 
-        if (!spawnTriggered) {
+        if (!spawnTriggered & spawner) {
             spawnTriggered = true;
             gm.UpdateSpawn(globalSpawnPoint);
         }
@@ -364,6 +368,10 @@ public class Deer : MonoBehaviour {
                 if (Mathf.Abs(playerTransform.position.x - transform.position.x) < 1.3f) {
                     friendlyActionState = FriendlyActionState.snuggle;
                     velocity.x = 0;
+                    if (gameEnder && !gameComplete) {
+                        gameComplete = true;
+                        winCanvas.SwitchToEnded();
+                    }                   
                 } else {
                     friendlyActionState = FriendlyActionState.walk;
                     velocity.x = -1 * friendlySpeed * faceDirX;
