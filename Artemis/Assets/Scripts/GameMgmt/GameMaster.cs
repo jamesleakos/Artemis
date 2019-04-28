@@ -51,6 +51,10 @@ public class GameMaster : MonoBehaviour {
     // public CameraShake cameraShake;
 
     #region Start, Update, OnSceneLoaded, OnEnable, OnDisable
+    void Awake() {
+        loadSplashScreen = true;
+    }
+
     void Start() {
         Application.targetFrameRate = 60;
         displayLevelOpenText = true;
@@ -225,60 +229,71 @@ public class GameMaster : MonoBehaviour {
         sceneNumber = sceneNumber - levelPaddingBesidesMain;
         switch (sceneNumber) {
             case 0:
-                return "Young girls should never argue," + "\n" +
-                        "Raise their voice, or cry." + "\n" +
-                        "If you disagree, just smile -" + "\n" +
-                        "And put an arrow through their eye.";
+                return "Let me sing of The End of Gods and Men" + "\n" +
+                "At the battle in the Aegean Skies." + "\n" +
+                "This song will not have a happy end - " + "\n" +
+                "Everybody dies." + "\n\n" +
+                        "-   A Raven's Tale, Verse 1";
             case 1: return "Young girls should never argue," + "\n" +
                 "Raise their voice, or cry." + "\n" +
                 "If you disagree, just smile -" + "\n" +
-                "And put an arrow through their eye.";
+                "And put an arrow through their eye." + "\n\n" +
+                        "-   Artemis, to a Shepherdess";
             case 2:
-                return "Young girls should never argue," + "\n" +
-                "Raise their voice, or cry." + "\n" +
-                "If you disagree, just smile -" + "\n" +
-                "And put an arrow through their eye.";
+                return "Steely shims and smokey punts," + "\n" +
+                "Iron whirrs and ticks and clicks." + "\n" +
+                "A wooden whoosh and metal crash" + "\n" +
+                "My arrows and your gears don’t mix." + "\n\n" +
+                        "-   Artemis, taunting robots";
             case 3:
-                return "Young girls should never argue," + "\n" +
-                "Raise their voice, or cry." + "\n" +
-                "If you disagree, just smile -" + "\n" +
-                "And put an arrow through their eye.";
+                return "Whirr-click whirr-click snicky-snack," + "\n" +
+                "Thumpi-whump carreening-clack." + "\n\n" +
+                "(We mine ore for our new sisters" + "\n" +
+                "While monsters try to end our race.)" + "\n\n" +
+                        "-   A Metal Lament";
             case 4:
-                return "Young girls should never argue," + "\n" +
-                "Raise their voice, or cry." + "\n" +
-                "If you disagree, just smile -" + "\n" +
-                "And put an arrow through their eye.";
+                return "Let me sing of The End of Gods and Men" + "\n" +
+                "At the battle in the Aegean Skies." + "\n" +
+                "This song will not have a happy end - " + "\n" +
+                "Everybody dies." + "\n\n" +
+                        "-   A Raven's Tale, Verse 1";
             case 5:
                 return "Young girls should never argue," + "\n" +
                  "Raise their voice, or cry." + "\n" +
                  "If you disagree, just smile -" + "\n" +
-                 "And put an arrow through their eye.";
+                 "And put an arrow through their eye." + "\n\n" +
+                        "-   Artemis, to a Shepherdess";
             case 6:
-                return "Young girls should never argue," + "\n" +
-                "Raise their voice, or cry." + "\n" +
-                "If you disagree, just smile -" + "\n" +
-                "And put an arrow through their eye.";
+                return "Steely shims and smokey punts," + "\n" +
+                "Iron whirrs and ticks and clicks." + "\n" +
+                "A wooden whoosh and metal crash" + "\n" +
+                "My arrows and your gears don’t mix." + "\n\n" +
+                        "-   Artemis, taunting robots";
             case 7:
-                return "Young girls should never argue," + "\n" +
-                "Raise their voice, or cry." + "\n" +
-                "If you disagree, just smile -" + "\n" +
-                "And put an arrow through their eye.";
+                return "Whirr-click whirr-click snicky-snack," + "\n" +
+                "Thumpi-whump carreening-clack." + "\n\n" +
+                "(We mine ore for our new sisters" + "\n" +
+                "But there are monsters out there who would end our race.)" + "\n\n" +
+                        "-   A Metal Lament";
             case 8:
-                return "Young girls should never argue," + "\n" +
-                "Raise their voice, or cry." + "\n" +
-                "If you disagree, just smile -" + "\n" +
-                "And put an arrow through their eye.";
+                return "Let me sing of The End of Gods and Men" + "\n" +
+                "At the battle in the Aegean Skies." + "\n" +
+                "This song will not have a happy end - " + "\n" +
+                "Everybody dies." + "\n\n" +
+                        "-   A Raven's Tale, Verse 1";
             case 9:
                 return "Young girls should never argue," + "\n" +
                 "Raise their voice, or cry." + "\n" +
                 "If you disagree, just smile -" + "\n" +
-                "And put an arrow through their eye.";
+                "And put an arrow through their eye." + "\n\n" +
+                        "-   Artemis, to a Shepherdess";
 
             default:
                 return "Young girls should never argue," + "\n" +
            "Raise their voice, or cry." + "\n" +
            "If you disagree, just smile -" + "\n" +
-           "And put an arrow through their eye.";
+           "And put an arrow through their eye." + "\n\n" +
+                        "   -   Artemis, to a Shepherdess";
         }
     }
     #endregion

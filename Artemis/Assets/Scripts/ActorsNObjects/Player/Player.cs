@@ -295,7 +295,10 @@ public class Player : MonoBehaviour {
    // }
 
     void Update() {
-        if (artemisState != ArtemisState.dead && artemisState != ArtemisState.respawning) {
+        // Update Input State
+        DetermineInput();
+
+        if (artemisState != ArtemisState.dead && artemisState != ArtemisState.respawning && inputOnFinal) {
             // moving and general controls
             velocity = CalculateVelocity();
             controller.Move(velocity * Time.deltaTime);
@@ -307,8 +310,6 @@ public class Player : MonoBehaviour {
         }
         // Update animation state
         DetermineAnim();
-        // Update Input State
-        DetermineInput();
     }
 
     void LateUpdate() {
