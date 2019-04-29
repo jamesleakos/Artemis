@@ -48,6 +48,12 @@ public class ArrowButton : MonoBehaviour {
         //menuDisable();
     //}
 
+    void Update() {
+        if (player == null) {
+            FindPlayer();
+        }
+    }
+
     void FindPlayer() {
         if (nextTimeToSearch <= Time.time) {
             GameObject searchResult = GameObject.FindGameObjectWithTag("Player");

@@ -243,7 +243,7 @@ public class GameMaster : MonoBehaviour {
                 return "Steely shims and smokey punts," + "\n" +
                 "Iron whirrs and ticks and clicks." + "\n" +
                 "A wooden whoosh and metal crash" + "\n" +
-                "My arrows and your gears don’t mix." + "\n\n" +
+                "My arrows and your gears dont mix." + "\n\n" +
                         "-   Artemis, taunting robots";
             case 3:
                 return "Whirr-click whirr-click snicky-snack," + "\n" +
@@ -267,7 +267,7 @@ public class GameMaster : MonoBehaviour {
                 return "Steely shims and smokey punts," + "\n" +
                 "Iron whirrs and ticks and clicks." + "\n" +
                 "A wooden whoosh and metal crash" + "\n" +
-                "My arrows and your gears don’t mix." + "\n\n" +
+                "My arrows and your gears dont mix." + "\n\n" +
                         "-   Artemis, taunting robots";
             case 7:
                 return "Whirr-click whirr-click snicky-snack," + "\n" +
