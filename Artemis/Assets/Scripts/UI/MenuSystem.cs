@@ -433,6 +433,14 @@ public class MenuSystem : MonoBehaviour {
             mainScreen.SetActive(false);
         }
     }
+
+    public void PlayFirstUncompletedLevel() {
+        if (PlayerPrefs.GetFloat("HighestLevelCompleted", 0f) == 0f) {
+            setLevelToLoad(gm.levelPaddingBesidesMain);
+        } else {
+            setLevelToLoad((int)PlayerPrefs.GetFloat("HighestLevelCompleted", 0f) + 1);
+        }
+    }
     #endregion
 
     #region PauseMenu

@@ -52,6 +52,10 @@ public class FinishArch : MonoBehaviour {
                     // Best time
                     PlayerPrefs.SetFloat("BestTimeLevel" + SceneManager.GetActiveScene().buildIndex, RunTime);
                     BestTimeText.text = "New Best Time!";
+
+                    if (PlayerPrefs.GetFloat("HighestLevelCompleted", 0f) < SceneManager.GetActiveScene().buildIndex) {
+                        PlayerPrefs.SetFloat("HighestLevelCompleted", SceneManager.GetActiveScene().buildIndex);
+                    }
                 }
             }
         }
