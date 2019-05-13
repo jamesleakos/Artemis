@@ -73,13 +73,17 @@ public class LevelSelectionController : MonoBehaviour {
     }
 
     void Update() {
-        float bestTime = PlayerPrefs.GetFloat("BestTimeLevel" + levelScroller.levelToLoad, 0f);
-        if (bestTime == 0f) {
+        float bestTimeEasy = PlayerPrefs.GetFloat("BestTimeLevel" + "LittleGirl" + levelScroller.levelToLoad, 0f);
+        float bestTimeHard = PlayerPrefs.GetFloat("BestTimeLevel" + "Goddess" + levelScroller.levelToLoad, 0f);
+        if (bestTimeEasy == 0f) {
             bestTimeTextLittleGirl.text = "Little Girl: Not Completed";
-            bestTimeTextDiety.text = "Diety: Not Completed";
         } else {
-            bestTimeTextLittleGirl.text = "Little Girl: " + PlayerPrefs.GetFloat("BestTimeLevel" + levelScroller.levelToLoad, 0f).ToString("0.#");
-            bestTimeTextDiety.text = "Diety: " + PlayerPrefs.GetFloat("BestTimeLevel" + levelScroller.levelToLoad, 0f).ToString("0.#");
+            bestTimeTextLittleGirl.text = "Little Girl: " + bestTimeEasy.ToString("0.#");
+        }
+        if (bestTimeHard == 0f) {
+            bestTimeTextDiety.text = "Goddess: Not Completed";
+        } else {
+            bestTimeTextDiety.text = "Goddess: " + bestTimeHard.ToString("0.#");
         }
 
         if (!simpleMovement) {
