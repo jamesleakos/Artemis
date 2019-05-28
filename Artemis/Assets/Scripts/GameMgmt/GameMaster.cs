@@ -40,8 +40,6 @@ public class GameMaster : MonoBehaviour {
     public float spawnDelay = 2;
     public bool spawnReached;
 
-    public enum RespawnState { respawn, reset };
-    public RespawnState respawnState;
     #endregion
 
     #region Misc GM Tracking
@@ -96,10 +94,10 @@ public class GameMaster : MonoBehaviour {
     #region Loading Levels and Respawn Player
 
     public void LoadOrRespawn() {
-        if (gm.respawnState == GameMaster.RespawnState.respawn) {
+        if (spawnReached) {
             gm.RespawnPlayer();
             menuSystem.fadeMaskController.LightenMask();
-        } else if (gm.respawnState == GameMaster.RespawnState.reset) {
+        } else {
             LoadLevel();
         }
     }
@@ -109,7 +107,7 @@ public class GameMaster : MonoBehaviour {
     public void SetLoadLevel(int levelInt) {
         levelToLoad = levelInt;
         menuSystem.FadeInEffect();
-        respawnState = RespawnState.reset;
+        spawnReached = false;
     }
     public void LoadLevel() {
         if (!displayLevelOpenText || levelToLoad == 0) {
@@ -141,13 +139,18 @@ public class GameMaster : MonoBehaviour {
     //Main
     public void SetRespawnPlayer() {
         menuSystem.FadeInEffect();
-        respawnState = RespawnState.respawn;
     }
     public void RespawnPlayer() {
-        Transform playerClone = Instantiate(playerPrefab, spawnPoint, new Quaternion(0f, 0f, 0f, 0f));
-        if (SceneManager.GetActiveScene().buildIndex == 0) {
-            playerClone.gameObject.GetComponent<Player>().muteSound = true;
+        if (spawnPoint != null) {
+            Transform playerClone = Instantiate(playerPrefab, spawnPoint, new Quaternion(0f, 0f, 0f, 0f));
+            if (SceneManager.GetActiveScene().buildIndex == 0) {
+                playerClone.gameObject.GetComponent<Player>().muteSound = true;
+            }
+        } else {
+            spawnReached = false;
+            LoadLevel();
         }
+        
     }
 
     //Updating Spawns
@@ -212,6 +215,7 @@ public class GameMaster : MonoBehaviour {
     public string ReturnSceneNames(int sceneNumber) {
         sceneNumber = sceneNumber - levelPaddingBesidesMain;
         switch (sceneNumber) {
+            case 0: return "";
             case 1: return "Chapter " + sceneNumber.ToString() + ":\n" + "A Stroll Through Olympia";
             case 2: return "Chapter " + sceneNumber.ToString() + ":\n" + "The Climb";
             case 3: return "Chapter " + sceneNumber.ToString() + ":\n" + "The Knot";
@@ -222,7 +226,7 @@ public class GameMaster : MonoBehaviour {
             case 8: return "Chapter " + sceneNumber.ToString() + ":\n" + "Circuitous Route";
             case 9: return "Chapter " + sceneNumber.ToString() + ":\n" + "Briar Isles";
             case 10: return "Chapter " + sceneNumber.ToString() + ":\n" + "Corycian Caves";
-            default: return "Need to Add more to Return Scene Names";
+            default: return "";
         }
     }
     public string ReturnSceneIntroText(int sceneNumber) {
