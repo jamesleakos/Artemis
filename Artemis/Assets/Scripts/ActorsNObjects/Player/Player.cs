@@ -307,7 +307,7 @@ public class Player : MonoBehaviour {
                 arrowProof = true;
             }
             if (Input.GetKey(KeyCode.M) && Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.N)) {
-                arrowProof = true;
+                arrowProof = false;
             }
         }
         // Update animation state
