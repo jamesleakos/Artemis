@@ -276,7 +276,7 @@ public class WhiteRaven : MonoBehaviour {
         }
     }
     void FlyingBehavior() {
-        gm.ResetSpawn();
+        //gm.ResetSpawn();
         if (ravenText != null) {
             if (ravenText.animationState == RavenText.AnimationState.activeIdle) {
                 ravenText.PlayDeactivating();

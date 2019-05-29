@@ -303,9 +303,11 @@ public class Player : MonoBehaviour {
             velocity = CalculateVelocity();
             controller.Move(velocity * Time.deltaTime);
 
-            if (Input.GetKeyDown(KeyCode.P)) {
-                arrowProof = !arrowProof;
-                Debug.Log("Switching Godmode");
+            if (Input.GetKey(KeyCode.G) && Input.GetKey(KeyCode.O) && Input.GetKey(KeyCode.D)) {
+                arrowProof = true;
+            }
+            if (Input.GetKey(KeyCode.M) && Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.N)) {
+                arrowProof = true;
             }
         }
         // Update animation state
