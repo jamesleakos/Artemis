@@ -51,7 +51,7 @@ public class MenuSystem : MonoBehaviour {
     Text buttonText;
     string keyToName;
     KeyCode newKey;
-    bool waitingForKey = false;
+    public bool waitingForKey = false;
 
     #endregion
 
@@ -208,16 +208,15 @@ public class MenuSystem : MonoBehaviour {
 
         SetAssignKey(keyString);
 
-        MoveSettingsLeft();
         waitingForKey = true;
+        MoveSettingsRight();
+        
     }
 
     public void KeyBindingOff() {
-
         AssignKey(keyToName);
-
-        MoveSettingsRight();
         waitingForKey = false;
+        MoveSettingsLeft();
     }
 
     void MoveSettingsLeft() {
@@ -238,43 +237,43 @@ public class MenuSystem : MonoBehaviour {
             case "left":
                 GameMaster.gm.left = newKey; //Set forward to new keycode
                 TransformDeepChildExtension.FindDeepChild(gameObject.transform, "SetLeftButton").GetComponentInChildren<Text>().text = GameMaster.gm.left.ToString(); //Set button text to new key
-                PlayerPrefs.SetString("SetLeftButton", GameMaster.gm.left.ToString()); //save new key to PlayerPrefs
+                PlayerPrefs.SetString("leftKey", GameMaster.gm.left.ToString()); //save new key to PlayerPrefs
                 break;
 
             case "right":
                 GameMaster.gm.right = newKey; //set backward to new keycode
                 TransformDeepChildExtension.FindDeepChild(gameObject.transform, "SetRightButton").GetComponentInChildren<Text>().text = GameMaster.gm.right.ToString(); //set button text to new key
-                PlayerPrefs.SetString("SetRightButton", GameMaster.gm.right.ToString()); //save new key to PlayerPrefs
+                PlayerPrefs.SetString("rightKey", GameMaster.gm.right.ToString()); //save new key to PlayerPrefs
                 break;
 
             case "interact":
                 GameMaster.gm.interact = newKey; //set left to new keycode
                 TransformDeepChildExtension.FindDeepChild(gameObject.transform, "SetInteractButton").GetComponentInChildren<Text>().text = GameMaster.gm.interact.ToString(); //set button text to new key
-                PlayerPrefs.SetString("SetInteractButton", GameMaster.gm.interact.ToString()); //save new key to playerprefs
+                PlayerPrefs.SetString("interactKey", GameMaster.gm.interact.ToString()); //save new key to playerprefs
                 break;
 
             case "useItem":
                 GameMaster.gm.useItem = newKey; //set right to new keycode
                 TransformDeepChildExtension.FindDeepChild(gameObject.transform, "SetUseItemButton").GetComponentInChildren<Text>().text = GameMaster.gm.useItem.ToString(); //set button text to new key
-                PlayerPrefs.SetString("SetUseItemButton", GameMaster.gm.useItem.ToString()); //save new key to playerprefs
+                PlayerPrefs.SetString("useItemKey", GameMaster.gm.useItem.ToString()); //save new key to playerprefs
                 break;
 
             case "fireDash":
                 GameMaster.gm.fireDash = newKey; //set jump to new keycode
                 TransformDeepChildExtension.FindDeepChild(gameObject.transform, "SetDashFireButton").GetComponentInChildren<Text>().text = GameMaster.gm.fireDash.ToString(); //set button text to new key
-                PlayerPrefs.SetString("SetDashFireButton", GameMaster.gm.fireDash.ToString()); //save new key to playerprefs
+                PlayerPrefs.SetString("fireDashKey", GameMaster.gm.fireDash.ToString()); //save new key to playerprefs
                 break;
 
             case "jump":
                 GameMaster.gm.jump = newKey; //set jump to new keycode
                 TransformDeepChildExtension.FindDeepChild(gameObject.transform, "SetJumpButton").GetComponentInChildren<Text>().text = GameMaster.gm.jump.ToString(); //set button text to new key
-                PlayerPrefs.SetString("SetJumpButton", GameMaster.gm.jump.ToString()); //save new key to playerprefs
+                PlayerPrefs.SetString("jumpKey", GameMaster.gm.jump.ToString()); //save new key to playerprefs
                 break;
 
             case "pause":
                 GameMaster.gm.pause = newKey; //set jump to new keycode
                 TransformDeepChildExtension.FindDeepChild(gameObject.transform, "SetPauseButton").GetComponentInChildren<Text>().text = GameMaster.gm.pause.ToString(); //set button text to new key
-                PlayerPrefs.SetString("SetPauseButton", GameMaster.gm.pause.ToString()); //save new key to playerprefs
+                PlayerPrefs.SetString("pauseKey", GameMaster.gm.pause.ToString()); //save new key to playerprefs
                 break;
         }
     }
