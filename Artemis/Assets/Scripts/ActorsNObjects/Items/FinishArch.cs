@@ -40,6 +40,8 @@ public class FinishArch : MonoBehaviour {
             animationState = AnimationState.WingsUp;
             menuSystem.SetTimer(false);
 
+            PlayerPrefs.SetFloat("LastLevelCompleted", SceneManager.GetActiveScene().buildIndex);
+
             if (SceneManager.GetActiveScene().buildIndex != gm.levelPaddingBesidesMain) {
                 float RunTime = menuSystem.timer.GetComponent<Timer>().runningTime;
                 RunTimeText.text = "Run Time: " + RunTime.ToString("0.#");
@@ -52,10 +54,6 @@ public class FinishArch : MonoBehaviour {
                     // Best time
                     PlayerPrefs.SetFloat("BestTimeLevel" + PlayerPrefs.GetString("GameDifficulty") + SceneManager.GetActiveScene().buildIndex, RunTime);
                     BestTimeText.text = "New Best Time!";
-
-                    if (PlayerPrefs.GetFloat("HighestLevelCompleted", 0f) < SceneManager.GetActiveScene().buildIndex) {
-                        PlayerPrefs.SetFloat("HighestLevelCompleted", SceneManager.GetActiveScene().buildIndex);
-                    }
                 }
             }
         }

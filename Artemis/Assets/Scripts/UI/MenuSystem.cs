@@ -434,10 +434,12 @@ public class MenuSystem : MonoBehaviour {
     }
 
     public void PlayFirstUncompletedLevel() {
-        if (PlayerPrefs.GetFloat("HighestLevelCompleted", 0f) == 0f) {
+        if (PlayerPrefs.GetFloat("LastLevelCompleted", 0f) == 0f) {
+            setLevelToLoad(gm.levelPaddingBesidesMain);
+        } else if (PlayerPrefs.GetFloat("LastLevelCompleted", 0f) == 12f) {
             setLevelToLoad(gm.levelPaddingBesidesMain);
         } else {
-            setLevelToLoad((int)PlayerPrefs.GetFloat("HighestLevelCompleted", 0f) + 1);
+            setLevelToLoad((int)PlayerPrefs.GetFloat("LastLevelCompleted", 0f) + 1);
         }
     }
     #endregion

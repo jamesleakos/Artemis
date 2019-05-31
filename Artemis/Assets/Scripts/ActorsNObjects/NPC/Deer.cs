@@ -324,7 +324,7 @@ public class Deer : MonoBehaviour {
                 } else {
                     if (Time.time > endAlertTime) {
                         if (playerTransform != null) {
-                            if (playerTransform.position.x > globalMinFriendRange.x && playerTransform.position.x < globalMaxFriendRange.x) { // player inside friend zone
+                            if (playerInSight && playerTransform.position.x > globalMinFriendRange.x && playerTransform.position.x < globalMaxFriendRange.x) { // player inside friend zone
                                 SwitchToFriendly();
                             } else {
                                 SwitchToGrazing();
@@ -424,7 +424,6 @@ public class Deer : MonoBehaviour {
     void SwitchToScared() {
         velocity.x = 0;
         deerState = DeerState.scared;
-        gm.ResetSpawn();
     }
     public void SwitchToJumping() {
         velocity.x = -1 * jumpSpeed * faceDirX;

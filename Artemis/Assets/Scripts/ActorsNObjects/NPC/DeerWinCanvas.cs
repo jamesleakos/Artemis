@@ -55,17 +55,19 @@ public class DeerWinCanvas: MonoBehaviour {
             animationState = AnimationState.WingsUp;
             menuSystem.SetTimer(false);
 
+            PlayerPrefs.SetFloat("LastLevelCompleted", SceneManager.GetActiveScene().buildIndex);
+
             if (SceneManager.GetActiveScene().buildIndex != gm.levelPaddingBesidesMain) {
                 float RunTime = menuSystem.timer.GetComponent<Timer>().runningTime;
                 RunTimeText.text = "Run Time: " + RunTime.ToString("0.#");
-                float LevelBest = PlayerPrefs.GetFloat("BestTimeLevel" + SceneManager.GetActiveScene().buildIndex, 0f);
+                float LevelBest = PlayerPrefs.GetFloat("BestTimeLevel" + PlayerPrefs.GetString("GameDifficulty") + SceneManager.GetActiveScene().buildIndex, 0f);
 
                 // Not best time
                 if (RunTime > LevelBest && LevelBest != 0f) {
                     BestTimeText.text = "Best Time: " + LevelBest.ToString("0.#");
                 } else {
                     // Best time
-                    PlayerPrefs.SetFloat("BestTimeLevel" + SceneManager.GetActiveScene().buildIndex, RunTime);
+                    PlayerPrefs.SetFloat("BestTimeLevel" + PlayerPrefs.GetString("GameDifficulty") + SceneManager.GetActiveScene().buildIndex, RunTime);
                     BestTimeText.text = "New Best Time!";
                 }
             }
